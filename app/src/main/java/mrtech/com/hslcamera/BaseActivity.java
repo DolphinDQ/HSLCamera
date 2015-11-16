@@ -1,5 +1,8 @@
 package mrtech.com.hslcamera;
 
+import android.app.Activity;
+
+
 import java.util.ArrayList;
 import java.util.List;
 

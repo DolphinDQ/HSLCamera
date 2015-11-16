@@ -289,9 +289,9 @@ public class DeviceSettingsActivity extends Activity implements SettingsListener
 			else if(msg.what ==1)
 			{
 				if(msg.arg1 ==1)
-					Toast.makeText(getBaseContext(), "设置成功", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getBaseContext(), "success", Toast.LENGTH_SHORT).show();
 				else
-					Toast.makeText(getBaseContext(), "设置失败", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getBaseContext(), "faild", Toast.LENGTH_SHORT).show();
 			}
 			else if(msg.what ==2)
 			{

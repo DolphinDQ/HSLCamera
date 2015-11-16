@@ -1,12 +1,13 @@
-/**
- *
- */
 package mrtech.com.hslcamera;
+
+import android.view.View;
+
 
 import hsl.p2pipcam.nativecaller.DeviceSDK;
 import mrtech.com.hslcamera.BaseActivity;
 import mrtech.com.hslcamera.BridgeService;
 import mrtech.com.hslcamera.DeviceStatusListener;
+import mrtech.com.hslcamera.R;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,7 +25,7 @@ import android.widget.TextView;
  * @author Administrator
  *
  */
-public class TestActivity extends BaseActivity implements OnClickListener,DeviceStatusListener
+public class TestActivity extends BaseActivity implements View.OnClickListener,DeviceStatusListener
 {
 	private EditText deviceIdItem;
 	private TextView statusItem;
