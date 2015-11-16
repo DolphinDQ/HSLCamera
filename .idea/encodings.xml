@@ -4,8 +4,30 @@
     <file url="file://$PROJECT_DIR$/app/libs/android-support-v4.jar" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/libs/nineoldanimatin.jar" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/libs/zxing.jar" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/mrtech/com/hslcamera/BaseActivity.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/mrtech/com/hslcamera/BridgeService.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/mrtech/com/hslcamera/BridgeService.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/mrtech/com/hslcamera/DevicePlayActivity.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/mrtech/com/hslcamera/DeviceSettingsActivity.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/mrtech/com/hslcamera/DeviceStatusListener.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/mrtech/com/hslcamera/DeviceStatusListener.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/mrtech/com/hslcamera/MyRender.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/mrtech/com/hslcamera/MyRender.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/mrtech/com/hslcamera/PlayListener.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/mrtech/com/hslcamera/PlayListener.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/mrtech/com/hslcamera/PlayListener.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/mrtech/com/hslcamera/RecorderListener.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/mrtech/com/hslcamera/RecorderListener.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/mrtech/com/hslcamera/SettingsListener.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/mrtech/com/hslcamera/SettingsListener.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/mrtech/com/hslcamera/TestActivity.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/mrtech/com/hslcamera/hslcamera/BridgeService.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/mrtech/com/hslcamera/hslcamera/DeviceStatusListener.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/mrtech/com/hslcamera/hslcamera/MyRender.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/mrtech/com/hslcamera/hslcamera/PlayListener.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/play_screen.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/settings_screen.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/test_screen.xml" charset="GBK" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>
