@@ -39,33 +39,33 @@ public class NativeCaller {
 	public native static int SetRender(long UserID, Object render);
 
 	/**
-	 * cloudPan contrul å¯¹åº”ä¹‹å‰çš„PPPPPTZControl(strDID, 61);
+	 * cloudPan contrul ¶ÔÓ¦Ö®Ç°µÄPPPPPTZControl(strDID, 61);
 	 */
 	public native static int PtzControl(long UserID, int nType);
 	
 	/**
-	 * set camera params å¯¹åº”ä¹‹å‰çš„PPPPCameraControl(strDID, 6, 10);
+	 * set camera params ¶ÔÓ¦Ö®Ç°µÄPPPPCameraControl(strDID, 6, 10);
 	 */
 	public native static int SetParam(long UserID, int nType, String param);
 
 	public native static int SetSearchCallBack(Object objSearch);
 
 	/**
-	 * åˆå§‹åŒ–æœç´¢
+	 * ³õÊ¼»¯ËÑË÷
 	 * 
 	 * @return
 	 */
 	public native static int SearchDeviceInit();
 
 	/**
-	 * ååˆå§‹åŒ–æœç´¢
+	 * ·´³õÊ¼»¯ËÑË÷
 	 * 
 	 * @return
 	 */
 	public native static int SearchDeviceUninit();
 
 	/**
-	 * å¼€å§‹æœç´¢
+	 * ¿ªÊ¼ËÑË÷
 	 * 
 	 * @return
 	 */
@@ -86,7 +86,7 @@ public class NativeCaller {
 	public native static int StopAudio(long UserID);
 
 	/**
-	 * å‘é€è¯­éŸ³æ•°æ®åˆ°åº•å±‚
+	 * ·¢ËÍÓïÒôÊı¾İµ½µ×²ã
 	 * 
 	 * @param nUserID
 	 * @param data
@@ -106,24 +106,24 @@ public class NativeCaller {
 	public native static int SearchRecordFile(long nUserID, int bYear, int bMon, int bDay, int bHour, int bMin, int bSec, 
 			int eYear, int eMon, int eDay, int eHour, int eMin, int eSec);
 
-	public native static int RecordPlayControl(long nUserID, String filename, int pos);// æ­¤æ¥å£åœæ­¢ä½¿ç”¨
+	public native static int RecordPlayControl(long nUserID, String filename, int pos);// ´Ë½Ó¿ÚÍ£Ö¹Ê¹ÓÃ
 	
-	// å¼€å§‹æ’­æ”¾
+	// ¿ªÊ¼²¥·Å
 	public native static int StartPlayRecord(long nUserID, String filename,int pos);
-	// ç»“æŸæ’­æ”¾
+	// ½áÊø²¥·Å
 	public native static int StopPlayRecord(long nUserID, String filename);
-	// è°ƒæ•´æ’­æ”¾ä½ç½®
+	// µ÷Õû²¥·ÅÎ»ÖÃ
 	public native static int PlayRecordPos(long nUserID, String filename, int pos);
-	// æš‚åœæ’­æ”¾
+	// ÔİÍ£²¥·Å
 	public native static int PausePlayRecord(long nUserID, String filename);
-	// è®¾ç½®å½•åƒæ•°æ®æ¸²æŸ“å¯¹è±¡
+	// ÉèÖÃÂ¼ÏñÊı¾İäÖÈ¾¶ÔÏó
 	public native static int SetRecordRender(long nUserID, Object render);
 	
 	
 	public native static int Start(long UserID);
 	
 	public native static int Stop(long UserID);
-	//æ£€æŸ¥ç½‘ç»œ
+	//¼ì²éÍøÂç
 	public native static int NetworkDetect(); 
 	
 	public native static int CapturePicture(long userid, String filename);

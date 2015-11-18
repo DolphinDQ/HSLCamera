@@ -4,7 +4,7 @@ package hsl.p2pipcam.nativecaller;
 public class DeviceSDK 
 {
 	/**
-	 * åˆå§‹åŒ–app
+	 * ³õÊ¼»¯app
 	 * @param serv
 	 * @return
 	 */
@@ -14,7 +14,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * æœç´¢å‰åˆå§‹åŒ–
+	 * ËÑË÷Ç°³õÊ¼»¯
 	 * @return
 	 */
 	public static int initSearchDevice()
@@ -23,7 +23,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * è®¾ç½®æœç´¢å›è°ƒå¯¹è±¡
+	 * ÉèÖÃËÑË÷»Øµ÷¶ÔÏó
 	 * @param object
 	 */
 	public static void setSearchCallback(Object object)
@@ -32,7 +32,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * è®¾ç½®å›è°ƒå¯¹è±¡
+	 * ÉèÖÃ»Øµ÷¶ÔÏó
 	 * @param object
 	 */
 	public static void setCallback(Object object)
@@ -41,7 +41,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * é€€å‡ºæœç´¢
+	 * ÍË³öËÑË÷
 	 * @return
 	 */
 	public static int unInitSearchDevice()
@@ -50,7 +50,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * æœç´¢è®¾å¤‡
+	 * ËÑË÷Éè±¸
 	 * @return
 	 */
 	public static int searchDevice()
@@ -59,7 +59,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * åˆ›å»ºè®¾å¤‡
+	 * ´´½¨Éè±¸
 	 * @param strUsername
 	 * @param strPwd
 	 * @param strHost
@@ -74,7 +74,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * é”€æ¯è®¾å¤‡
+	 * Ïú»ÙÉè±¸
 	 * @param UserID
 	 * @return
 	 */
@@ -84,7 +84,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * è®¾å¤‡å¼€å¯
+	 * Éè±¸¿ªÆô
 	 * @param userID
 	 * @return
 	 */
@@ -94,7 +94,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * è®¾å¤‡å…³é—­
+	 * Éè±¸¹Ø±Õ
 	 * @param userID
 	 * @return
 	 */
@@ -104,7 +104,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * è·å–è®¾å¤‡å‚æ•°
+	 * »ñÈ¡Éè±¸²ÎÊı
 	 * @param userID
 	 * @param nType
 	 * @return
@@ -115,7 +115,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * è®¾ç½®è®¾å¤‡å‚æ•°
+	 * ÉèÖÃÉè±¸²ÎÊı
 	 * @param userID
 	 * @param nType
 	 * @param param
@@ -127,7 +127,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * æ’­æ”¾å®æ—¶è§†é¢‘æµ
+	 * ²¥·ÅÊµÊ±ÊÓÆµÁ÷
 	 * @param userID
 	 * @param streamId
 	 * @param subStreamId
@@ -139,7 +139,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * ç»“æŸæ’­æ”¾è§†é¢‘æµ
+	 * ½áÊø²¥·ÅÊÓÆµÁ÷
 	 * @param userID
 	 * @return
 	 */
@@ -149,7 +149,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * è®¾ç½®ç”»æ¿
+	 * ÉèÖÃ»­°å
 	 * @param userID
 	 * @param render
 	 */
@@ -159,7 +159,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * æ§åˆ¶è®¾å¤‡
+	 * ¿ØÖÆÉè±¸
 	 * @param UserID
 	 * @param nType
 	 * @return
@@ -170,7 +170,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * æ’­æ”¾éŸ³é¢‘
+	 * ²¥·ÅÒôÆµ
 	 * @param UserID
 	 * @param AudioId
 	 * @return
@@ -181,7 +181,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * ç»“æŸéŸ³é¢‘æ’­æ”¾
+	 * ½áÊøÒôÆµ²¥·Å
 	 * @param UserID
 	 * @return
 	 */
@@ -191,7 +191,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * å¼€å§‹è¯´è¯
+	 * ¿ªÊ¼Ëµ»°
 	 * @param nUserID
 	 * @return
 	 */
@@ -201,7 +201,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * ç»“æŸè¯´è¯
+	 * ½áÊøËµ»°
 	 * @param UserID
 	 * @return
 	 */
@@ -211,7 +211,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * å‘é€è¯´è¯æ•°æ®
+	 * ·¢ËÍËµ»°Êı¾İ
 	 * @param nUserID
 	 * @param data
 	 * @param size
@@ -223,7 +223,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * å›¾ç‰‡æµè½¬æ¢
+	 * Í¼Æ¬Á÷×ª»»
 	 * @param yuv
 	 * @param rgb
 	 * @param width
@@ -236,7 +236,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * å¼€å§‹å½•åƒ
+	 * ¿ªÊ¼Â¼Ïñ
 	 * @param filename
 	 * @param forcc
 	 * @param height
@@ -250,7 +250,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * å½•åƒæ•°æ®æµå†™å…¥åˆ°æ–‡ä»¶
+	 * Â¼ÏñÊı¾İÁ÷Ğ´Èëµ½ÎÄ¼ş
 	 * @param data
 	 * @param len
 	 * @param keyframe
@@ -262,7 +262,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * ç»“æŸå½•åƒ
+	 * ½áÊøÂ¼Ïñ
 	 * @return
 	 */
 	public static int stopRecordVideo()
@@ -271,7 +271,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * è·å–è¿œç¨‹å½•åƒ
+	 * »ñÈ¡Ô¶³ÌÂ¼Ïñ
 	 * @param userid
 	 * @return
 	 */
@@ -281,7 +281,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * è®¾ç½®å½•åƒæ’­æ”¾Render
+	 * ÉèÖÃÂ¼Ïñ²¥·ÅRender
 	 * @param nUserID
 	 * @param render
 	 * @return
@@ -292,7 +292,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * å¼€å§‹æ’­æ”¾å½•åƒ
+	 * ¿ªÊ¼²¥·ÅÂ¼Ïñ
 	 * @param nUserID
 	 * @param filename
 	 * @return
@@ -303,7 +303,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * ç»“æŸæ’­æ”¾å½•åƒ
+	 * ½áÊø²¥·ÅÂ¼Ïñ
 	 * @param nUserID
 	 * @param filename
 	 * @return
@@ -313,7 +313,7 @@ public class DeviceSDK
 		return NativeCaller.StopPlayRecord(nUserID, filename);
 	}
 	/**
-	 * è°ƒæ•´æ’­æ”¾ä½ç½®
+	 * µ÷Õû²¥·ÅÎ»ÖÃ
 	 * @param nUserID
 	 * @param filename
 	 * @param pos
@@ -325,7 +325,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * æš‚åœæ’­æ”¾
+	 * ÔİÍ£²¥·Å
 	 * @param nUserID
 	 * @param filename
 	 * @return
@@ -336,7 +336,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * æ£€æµ‹ç½‘ç»œ
+	 * ¼ì²âÍøÂç
 	 */
 	public static void networkDetect()
 	{
@@ -344,7 +344,7 @@ public class DeviceSDK
 	}
 	
 	/**
-	 * ç»“æŸapp
+	 * ½áÊøapp
 	 * @return
 	 */
 	public static int unInitialize()

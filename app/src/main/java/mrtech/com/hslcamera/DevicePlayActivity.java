@@ -23,12 +23,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
+
+import java.util.Objects;
 
 //import com.test.R;
 
@@ -93,6 +96,7 @@ public class DevicePlayActivity extends BaseActivity implements PlayListener,MyR
 		up_down_item.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+
 				if(value == 3)
 				{
 					value =1;
@@ -267,7 +271,9 @@ public class DevicePlayActivity extends BaseActivity implements PlayListener,MyR
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
+
 			progressLayout.setVisibility(View.GONE);
+			trace("progress GONE....");
 		}
 	};
 	@Override
@@ -331,11 +337,14 @@ public class DevicePlayActivity extends BaseActivity implements PlayListener,MyR
 		}
 
 	}
-
+	private void  trace (String format, Object... args){
+		Log.d(this.getLocalClassName(),String.format( format,args));
+	}
 	@Override
 	public void initComplete(int size, int width, int height) {
 		// TODO Auto-generated method stub
 		frushHandler.sendEmptyMessage(0);
+		trace( "size :%d,width:%d,height:%d",size,width,height);
 	}
 
 	@Override
