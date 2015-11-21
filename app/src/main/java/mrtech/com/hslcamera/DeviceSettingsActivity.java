@@ -45,7 +45,7 @@ public class DeviceSettingsActivity extends Activity implements SettingsListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings_screen);
 		BridgeService.setSettingsListener(this);
-		userid = TestActivity.userid;
+		userid = TestActivity.userId;
 		initView();
 	}
 	

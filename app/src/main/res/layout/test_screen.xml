@@ -77,6 +77,24 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-
+        <Button
+            android:id="@+id/test_btn"
+            android:text="开始测试"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/cancel_test_btn"
+            android:text="取消测试"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/navigate_to"
+            android:text="跳转"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
+    <ListView
+        android:id="@+id/log_lst"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></ListView>
 </LinearLayout>

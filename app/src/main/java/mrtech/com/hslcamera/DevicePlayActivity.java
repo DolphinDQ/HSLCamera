@@ -1,8 +1,5 @@
 package mrtech.com.hslcamera;
 
-import mrtech.com.hslcamera.BaseActivity;
-import mrtech.com.hslcamera.MyRender;
-
 
 import hsl.p2pipcam.nativecaller.DeviceSDK;
 import hsl.p2pipcam.nativecaller.NativeCaller;
@@ -12,7 +9,6 @@ import hsl.p2pipcam.util.CustomAudioRecorder.AudioRecordResult;
 import hsl.p2pipcam.util.CustomBuffer;
 import hsl.p2pipcam.util.CustomBufferData;
 import hsl.p2pipcam.util.CustomBufferHead;
-import mrtech.com.hslcamera.PlayListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,8 +26,6 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
-
-import java.util.Objects;
 
 //import com.test.R;
 
@@ -57,7 +51,7 @@ public class DevicePlayActivity extends BaseActivity implements PlayListener,MyR
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.play_screen);
 		BridgeService.setPlayListener(this);
-		userid = TestActivity.userid;
+		userid = TestActivity.userId;
 		customAudioRecorder = new CustomAudioRecorder(this);
 		AudioBuffer = new CustomBuffer();
 		audioPlayer = new AudioPlayer(AudioBuffer);

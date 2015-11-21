@@ -66,7 +66,7 @@ public class DeviceSDK
 	 * @param nPort
 	 * @param StrDid
 	 * @param NetType 0=TCP ,1=P2P
-	 * @return userid
+	 * @return userId
 	 */
 	public static long createDevice(String strUsername, String strPwd,String strHost, int nPort, String StrDid, int NetType)
 	{
