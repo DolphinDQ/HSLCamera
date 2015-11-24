@@ -77,19 +77,31 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/auth_btn"
+            android:text="获取授权"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/get_data_btn"
+            android:text="获取数据"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
         <Button
             android:id="@+id/test_btn"
-            android:text="开始测试"
+            android:text="全部测试"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/cancel_test_btn"
             android:text="取消测试"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/navigate_to"
-            android:text="跳转"
+            android:text="P2P"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>

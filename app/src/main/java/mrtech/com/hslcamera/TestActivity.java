@@ -15,7 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 
@@ -23,33 +22,10 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.protocol.Protocol;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.StringWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.security.cert.Certificate;
-import java.security.KeyStore;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Objects;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManagerFactory;
 
 //import com.test.R;
 
@@ -98,9 +74,11 @@ public class TestActivity extends BaseActivity implements View.OnClickListener, 
         closeItem.setOnClickListener(this);
         findViewById(R.id.test_btn).setOnClickListener(this);
         findViewById(R.id.cancel_test_btn).setOnClickListener(this);
-       stringArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, new ArrayList<String>());
+        stringArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, new ArrayList<String>());
         logList.setAdapter(stringArrayAdapter);
         findViewById(R.id.navigate_to).setOnClickListener(this);
+        findViewById(R.id.get_data_btn).setOnClickListener(this);
+        findViewById(R.id.auth_btn).setOnClickListener(this);
 //        findViewById(R.id.btnStart).setOnClickListener(this);
     }
 
@@ -129,7 +107,13 @@ public class TestActivity extends BaseActivity implements View.OnClickListener, 
                 }
                 break;
             case R.id.test_btn:
-                startTest();
+                startTest(0);
+                break;
+            case R.id.auth_btn:
+                startTest(1);
+                break;
+            case R.id.get_data_btn:
+                startTest(2);
                 break;
             case R.id.cancel_test_btn:
                 cancelTest();
@@ -144,22 +128,47 @@ public class TestActivity extends BaseActivity implements View.OnClickListener, 
         Intent intent = new Intent(this, ListTestActivity.class);
         startActivity(intent);
     }
-
-    private void startTest() {
+    private  static  JSONObject mAuthResult;
+    private void startTest(final int type) {
 //        new AuthTask().execute();
         stringArrayAdapter.clear();
-         testTask= new AsyncTask<Void, Void, Void>() {
+        testTask = new AsyncTask<Void, Void, Void>() {
             private Calendar start;
+
             @Override
             protected Void doInBackground(Void... params) {
-                JSONObject authResult = doAuth();
+
                 try {
-                    if (authResult != null && authResult.getBoolean("success")) {
-                        String token = authResult.getString("access_token");
-                        String tokenType = authResult.getString("token_type");
-                        doGetData(token, tokenType);
-                        doGetPaging(token, tokenType);
+                    switch (type) {
+                        default:
+                            JSONObject authResult = doAuth();
+                            if (authResult != null && authResult.getBoolean("success")) {
+                                String token = authResult.getString("access_token");
+                                String tokenType = authResult.getString("token_type");
+                                doGetData(token, tokenType);
+//                        doGetPaging(token, tokenType);
+                            }
+                            break;
+                        case 1:
+                            mAuthResult = doAuth();
+                            if (mAuthResult != null && mAuthResult.getBoolean("success")){
+                                trace("登录成功");
+                            }else   {
+                                trace("登录失败");
+                            }
+                            break;
+                        case 2:
+                            if (mAuthResult != null && mAuthResult.getBoolean("success")) {
+                                String token = mAuthResult.getString("access_token");
+                                String tokenType = mAuthResult.getString("token_type");
+                                doGetData(token, tokenType);
+                            }else {
+                                trace("未验证");
+                            }
+                            break;
                     }
+
+
                 } catch (Exception e) {
                     trace(e.getMessage());
                 }
@@ -176,7 +185,7 @@ public class TestActivity extends BaseActivity implements View.OnClickListener, 
                 post.addParameter("scope", "api");
                 post.addParameter("client_id", "route_app");
                 post.addParameter("client_secret", "74C84CDC-24A2-42BE-AF7C-A2D6C3855251");
-                return getJsonResponse(client, post);
+                return jsonResponse(client, post);
             }
 
             private JSONObject doGetData(String token, String tokentype) {
@@ -184,28 +193,29 @@ public class TestActivity extends BaseActivity implements View.OnClickListener, 
                 client.getHostConfiguration().setHost("user.hzmr-tech.com", 443, "https");
                 GetMethod get = new GetMethod("/api/routeruser/GetSelfDetail");
                 get.addRequestHeader("Authorization", tokentype + " " + token);
-                return getJsonResponse(client, get);
+                return jsonResponse(client, get);
             }
-             private  JSONObject doGetPaging(String token,String tokentype){
-                 HttpClient client = new HttpClient();
-                 client.getHostConfiguration().setHost("user.hzmr-tech.com", 443, "https");
-                 PostMethod get = new PostMethod("/api/RouterConfiguration/QueryPaging");
-                 get.setRequestBody("{\"Page\":1,\"Size\":100,\"Condition\":{\"RouterUserId\":1}}");
-                 get.addRequestHeader("Authorization", tokentype + " " + token);
-                 get.setRequestHeader("Content-Type", "application/json");
-                 return getJsonResponse(client, get);
-             }
 
-            private JSONObject getJsonResponse(HttpClient client, HttpMethod method) {
+            private JSONObject doGetPaging(String token, String tokentype) {
+                HttpClient client = new HttpClient();
+                client.getHostConfiguration().setHost("user.hzmr-tech.com", 443, "https");
+                PostMethod get = new PostMethod("/api/RouterConfiguration/QueryPaging");
+                get.setRequestBody("{\"Page\":1,\"Size\":100,\"Condition\":{\"RouterUserId\":1}}");
+                get.addRequestHeader("Authorization", tokentype + " " + token);
+                get.setRequestHeader("Content-Type", "application/json");
+                return jsonResponse(client, get);
+            }
+
+            private JSONObject jsonResponse(HttpClient client, HttpMethod method) {
                 try {
                     start = Calendar.getInstance();
                     int code = client.executeMethod(method);
-                    trace("execute result : " + code);
+                    trace("请求结果 : " +(code==200?"成功":"失败") +" "+ code);
                     String json = method.getResponseBodyAsString();
                     JSONObject resp = new JSONObject(json);
-                    trace(json);
+                   // trace(json);
                     resp.put("success", code == 200);
-                    trace("execute times :" + (Calendar.getInstance().getTimeInMillis() - start.getTimeInMillis()) + "ms");
+                    trace("请求处理时间 :" + (Calendar.getInstance().getTimeInMillis() - start.getTimeInMillis()) + "ms");
                     return resp;
                 } catch (Exception e) {
                     trace(e.getMessage());
@@ -215,6 +225,7 @@ public class TestActivity extends BaseActivity implements View.OnClickListener, 
         };
         testTask.execute();
     }
+
 //    private  static  class StringUtils{
 //        public static boolean isEmpty(String str){
 //            return  str==null||str=="";
