@@ -87,14 +87,23 @@
             android:exported="true" >
         </service>
 
-        <activity android:name=".ListTestActivity"
+        <activity
+            android:name=".ListTestActivity"
             android:label="P2P测试"
-            android:parentActivityName="TestActivity" >
+            android:parentActivityName=".TestActivity" >
+
             <!-- The meta-data element is needed for versions lower than 4.1 -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="TestActivity" />
-
+        </activity>
+        <activity android:name=".CameraListActivity"
+            android:label="摄像头连接测试"
+            android:parentActivityName=".TestActivity"
+            >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="TestActivity" />
         </activity>
     </application>
 

@@ -6,6 +6,7 @@
     android:orientation="vertical" >
 
     <LinearLayout
+        android:visibility="gone"
         android:layout_width="fill_parent"
         android:layout_height="100dp"
         android:gravity="center_vertical"
@@ -20,7 +21,7 @@
             android:id="@+id/device_id_item"
             android:layout_width="200dp"
             android:textSize="14sp"
-            android:text="HSL-129374-PCGYF"
+            android:text="HSL-118486-DLFHB"
             android:layout_height="wrap_content" />
 
         <Button
@@ -32,6 +33,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:visibility="gone"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_marginTop="10dp"
@@ -81,16 +83,18 @@
         <Button
             android:id="@+id/auth_btn"
             android:text="获取授权"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/get_data_btn"
             android:text="获取数据"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/test_btn"
-            android:text="全部测试"
+            android:text="登录验证"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <Button
@@ -104,7 +108,13 @@
             android:text="P2P"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/camara_list_btn"
+            android:text="摄像头"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
+
     <ListView
         android:id="@+id/log_lst"
         android:layout_width="wrap_content"

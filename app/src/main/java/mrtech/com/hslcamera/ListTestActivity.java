@@ -19,13 +19,12 @@ import java.util.Calendar;
 public class ListTestActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ArrayAdapter<String> testListAdapter;
-    private Button btnStartTask;
-    private Button btnStopTask;
     private P2PConectionTask p2pConnectionTask;
     private Handler handler;
 
     private static final String p2pId = "umkss83g7brx";
-
+//    private static final String p2pId = "umkssninfcuf";
+//
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,8 +52,8 @@ public class ListTestActivity extends AppCompatActivity implements View.OnClickL
         ListView testList = (ListView) findViewById(R.id.test_lst);
         testListAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, new ArrayList<String>());
         testList.setAdapter(testListAdapter);
-        (btnStartTask = (Button) findViewById(R.id.start_task_btn)).setOnClickListener(this);
-        (btnStopTask = (Button) findViewById(R.id.stop_task_btn)).setOnClickListener(this);
+         findViewById(R.id.start_task_btn).setOnClickListener(this);
+        findViewById(R.id.stop_task_btn).setOnClickListener(this);
         findViewById(R.id.clear_log_btn).setOnClickListener(this);
     }
 

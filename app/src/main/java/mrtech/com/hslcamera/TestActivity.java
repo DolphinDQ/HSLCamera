@@ -46,17 +46,47 @@ public class TestActivity extends BaseActivity implements View.OnClickListener, 
     private ListView logList;
     private ArrayAdapter<String> stringArrayAdapter;
     private AsyncTask<Void, Void, Void> testTask;
+    private Button btnCamera;
+    private HSLCameraManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test_screen);
-        Intent intent = new Intent(this, BridgeService.class);
-        startService(intent);
+//        Intent intent = new Intent(this, BridgeService.class);
+//        startService(intent);
         initView();
 
-        BridgeService.setDeviceStatusListener(this);
+//        BridgeService.setDeviceStatusListener(this);
+        manager = HSLCameraManager.getInstance();
+        manager.init();
+        manager.setDeviceStatusListener(new DeviceStatusListener() {
+            @Override
+            public void receiveDeviceStatus(long userid, int status) {
+                playItem.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshCameraNumber();
+                    }
+                });
+            }
+        });
+        manager.addCamera(new HSLCamera(null, "HSL-118486-DLFHB", "admin", ""));
+        manager.addCamera(new HSLCamera(null, "HSL-033860-DWUZF", "admin", ""));
+        manager.addCamera(new HSLCamera(null, "HSL-125999-BVHJY", "admin", ""));
+        manager.addCamera(new HSLCamera(null, "HSL-124419-UBUFY", "admin", ""));
+        refreshCameraNumber();
+    }
 
+    private void refreshCameraNumber() {
+        int num=0;
+        HSLCamera[] cameraList = manager.getCameraList();
+        for (HSLCamera hslCamera : cameraList) {
+            if (hslCamera.mStatus.getStatus()==100){
+                num++;
+            }
+        }
+        btnCamera.setText("摄像头("+num+"/"+cameraList.length+")");
     }
 
     private void initView() {
@@ -79,6 +109,8 @@ public class TestActivity extends BaseActivity implements View.OnClickListener, 
         findViewById(R.id.navigate_to).setOnClickListener(this);
         findViewById(R.id.get_data_btn).setOnClickListener(this);
         findViewById(R.id.auth_btn).setOnClickListener(this);
+         btnCamera =(Button) findViewById(R.id.camara_list_btn);
+        btnCamera.setOnClickListener(this);
 //        findViewById(R.id.btnStart).setOnClickListener(this);
     }
 
@@ -90,6 +122,7 @@ public class TestActivity extends BaseActivity implements View.OnClickListener, 
                 String did = deviceIdItem.getText().toString().trim();
                 if (userId == 0)
                     userId = DeviceSDK.createDevice("admin", "", "", 0, did, 1);
+                trace("摄像头连接ID:" + userId);
                 if (userId > 0) {
                     startTime = Calendar.getInstance();
                     int start = DeviceSDK.openDevice(userId);
@@ -119,16 +152,21 @@ public class TestActivity extends BaseActivity implements View.OnClickListener, 
                 cancelTest();
                 break;
             case R.id.navigate_to:
-                naviget();
+                naviget(ListTestActivity.class);
+                break;
+            case R.id.camara_list_btn:
+                naviget(CameraListActivity.class);
                 break;
         }
     }
 
-    private void naviget() {
-        Intent intent = new Intent(this, ListTestActivity.class);
+    private void naviget(Class<?> cls) {
+        Intent intent = new Intent(this, cls);
         startActivity(intent);
     }
-    private  static  JSONObject mAuthResult;
+
+    private static JSONObject mAuthResult;
+
     private void startTest(final int type) {
 //        new AuthTask().execute();
         stringArrayAdapter.clear();
@@ -151,9 +189,9 @@ public class TestActivity extends BaseActivity implements View.OnClickListener, 
                             break;
                         case 1:
                             mAuthResult = doAuth();
-                            if (mAuthResult != null && mAuthResult.getBoolean("success")){
+                            if (mAuthResult != null && mAuthResult.getBoolean("success")) {
                                 trace("登录成功");
-                            }else   {
+                            } else {
                                 trace("登录失败");
                             }
                             break;
@@ -162,7 +200,7 @@ public class TestActivity extends BaseActivity implements View.OnClickListener, 
                                 String token = mAuthResult.getString("access_token");
                                 String tokenType = mAuthResult.getString("token_type");
                                 doGetData(token, tokenType);
-                            }else {
+                            } else {
                                 trace("未验证");
                             }
                             break;
@@ -210,10 +248,10 @@ public class TestActivity extends BaseActivity implements View.OnClickListener, 
                 try {
                     start = Calendar.getInstance();
                     int code = client.executeMethod(method);
-                    trace("请求结果 : " +(code==200?"成功":"失败") +" "+ code);
+                    trace("请求结果 : " + (code == 200 ? "成功" : "失败") + " " + code);
                     String json = method.getResponseBodyAsString();
                     JSONObject resp = new JSONObject(json);
-                   // trace(json);
+                    // trace(json);
                     resp.put("success", code == 200);
                     trace("请求处理时间 :" + (Calendar.getInstance().getTimeInMillis() - start.getTimeInMillis()) + "ms");
                     return resp;
