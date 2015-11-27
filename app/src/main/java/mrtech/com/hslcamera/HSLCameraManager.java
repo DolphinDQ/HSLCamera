@@ -4,6 +4,8 @@ import android.bluetooth.BluetoothClass;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -14,8 +16,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -34,8 +34,9 @@ public class HSLCameraManager {
     private RecorderListener recorderListener;
     private PlayListener playListener;
     private DeviceStatusListener deviceStatusListener;
+    private Handler mHandler;
 
-    private static void trace(String msg) {
+    private static void trace( String msg) {
         Log.e(HSLCameraManager.class.getName(), msg);
     }
 
@@ -70,7 +71,7 @@ public class HSLCameraManager {
 
     public void addCamera(HSLCamera cam) {
         if (getCamera(cam.mCamId) == null) {
-            cam.mStatus =  this.new CameraStatus();
+            cam.mStatus = this.new CameraStatus();
             mCameras.add(cam);
             LinkCam(cam);
         }
@@ -81,7 +82,7 @@ public class HSLCameraManager {
     }
 
     public HSLCamera[] getCameraList() {
-        return mCameras.toArray(new HSLCamera[0]);
+        return mCameras.toArray(new HSLCamera[mCameras.size()]);
     }
 
     public HSLPlayer createCameraPlayer(GLSurfaceView glSurfaceView) {
@@ -91,14 +92,14 @@ public class HSLCameraManager {
     }
 
     public void removeCamera(HSLCamera cam) {
-        long id=cam.mStatus.getHandle();
+        long id = cam.mStatus.getHandle();
         DeviceSDK.closeDevice(id);
         mCameras.remove(cam);
     }
 
     public void removeCamera(String deviceId) {
         for (HSLCamera cam : mCameras) {
-            if (cam.mCamId == deviceId) {
+            if (cam.mCamId .equals( deviceId)) {
                 mCameras.remove(cam);
                 return;
             }
@@ -107,7 +108,7 @@ public class HSLCameraManager {
 
     public HSLCamera getCamera(String deviceId) {
         for (HSLCamera cam : mCameras) {
-            if (cam.mCamId == deviceId)
+            if (cam.mCamId.equals( deviceId))
                 return cam;
         }
         return null;
@@ -127,6 +128,7 @@ public class HSLCameraManager {
     }
 
     public void setPlayListener(PlayListener listener) {
+
         playListener = listener;
     }
 
@@ -138,7 +140,33 @@ public class HSLCameraManager {
         settingsListener = listener;
     }
 
+    public void setCallbackLoop(Looper loop) {
+        if (loop == null) {
+            mHandler = null;
+        } else {
+            mHandler = new Handler(loop);
+        }
+    }
+
     //-----------------------以下是内部类---------------------------------------------
+
+    private abstract class CallbackBase {
+
+        public abstract void callback();
+
+        public final void run() {
+            if (mHandler != null) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback();
+                    }
+                });
+            } else {
+                callback();
+            }
+        }
+    }
 
     public class LinkCameraTask extends AsyncTask<HSLCamera, Void, Void> {
         @Override
@@ -178,31 +206,45 @@ public class HSLCameraManager {
     }
 
     private class JNICallback {
-        public void CallBack_SnapShot(long UserID, byte[] buff, int len) {
+        public void CallBack_SnapShot(final long UserID, final byte[] buff, final int len) {
         }
 
-        public void CallBack_GetParam(long UserID, long nType, String param) {
-            if (settingsListener != null)
-                settingsListener.callBack_getParam(UserID, nType, param);
+        public void CallBack_GetParam(final long UserID, final long nType, final String param) {
+            if (settingsListener != null) {
+                new CallbackBase() {
+                    @Override
+                    public void callback() {
+                        settingsListener.callBack_getParam(UserID, nType, param);
+                    }
+                }.run();
+            }
         }
 
-        public void CallBack_SetParam(long UserID, long nType, int nResult) {
-            if (settingsListener != null)
-                settingsListener.callBack_setParam(UserID, nType, nResult);
+        public void CallBack_SetParam(final long UserID, final long nType, final int nResult) {
+            if (settingsListener != null) {
+                if (mHandler != null) {
+                    new CallbackBase() {
+                        @Override
+                        public void callback() {
+                            settingsListener.callBack_setParam(UserID, nType, nResult);
+                        }
+                    }.run();
+                }
+            }
         }
 
-        public void CallBack_Event(long UserID, long nType) {
-            int status = new Long(nType).intValue();
+        public void CallBack_Event(final long UserID, long nType) {
+            final int status = new Long(nType).intValue();
             final HSLCamera cam;
             if ((cam = getCamera(UserID)) != null) {
                 ((CameraStatus) cam.mStatus).mStatus = status;
                 trace("camera " + cam.mCamId + " state changed to " + status);
-                if (status==101){
-                    new AsyncTask<HSLCamera,Void,Void>(){
+                if (status == 101||status==10) {
+                    new AsyncTask<HSLCamera, Void, Void>() {
                         @Override
                         protected Void doInBackground(HSLCamera... params) {
                             try {
-                               Thread.sleep(1000);
+                                Thread.sleep(1000);
                                 removeCamera(params[0]);
                                 addCamera(params[0]);
                             } catch (InterruptedException e) {
@@ -213,24 +255,46 @@ public class HSLCameraManager {
                     }.execute(cam);
                 }
             }
-            if (deviceStatusListener != null)
-                deviceStatusListener.receiveDeviceStatus(UserID, status);
+            if (deviceStatusListener != null) {
+                new CallbackBase() {
+                    @Override
+                    public void callback() {
+                        deviceStatusListener.receiveDeviceStatus(UserID, status);
+                    }
+                }.run();
+            }
         }
 
         public void VideoData(long UserID, byte[] VideoBuf, int h264Data, int nLen, int Width, int Height, int time) {
 
         }
 
-        public void callBackAudioData(long nUserID, byte[] pcm, int size) {
+        public void callBackAudioData(final long nUserID, final byte[] pcm, final int size) {
             if (playListener != null)
-                playListener.callBackAudioData(nUserID, pcm, size);
-            if (recorderListener != null)
-                recorderListener.callBackAudioData(nUserID, pcm, size);
+                new CallbackBase() {
+                    @Override
+                    public void callback() {
+                        playListener.callBackAudioData(nUserID, pcm, size);
+                    }
+                }.run();
+            if (recorderListener != null) {
+                new CallbackBase() {
+                    @Override
+                    public void callback() {
+                        recorderListener.callBackAudioData(nUserID, pcm, size);
+                    }
+                }.run();
+            }
         }
 
-        public void CallBack_RecordFileList(long UserID, int filecount, String fname, String strDate, int size) {
+        public void CallBack_RecordFileList(final long UserID, final int filecount, final String fname, final String strDate, final int size) {
             if (settingsListener != null)
-                settingsListener.recordFileList(UserID, filecount, fname, strDate, size);
+                new CallbackBase() {
+                    @Override
+                    public void callback() {
+                        settingsListener.recordFileList(UserID, filecount, fname, strDate, size);
+                    }
+                }.run();
         }
 
         public void CallBack_P2PMode(long UserID, int nType) {
@@ -512,20 +576,30 @@ public class HSLCameraManager {
             return 0;
         }
 
-        public void writeSample(byte[] paramArrayOfByte, int width, int height) {
+        public void writeSample(final byte[] paramArrayOfByte, final int width, final int height) {
             synchronized (this) {
                 if ((width == 0) || (height == 0)) {
                     return;
                 }
                 if (listener != null) {
-                    listener.initComplete(paramArrayOfByte.length, width, height);
+                    new CallbackBase() {
+                        @Override
+                        public void callback() {
+                            listener.initComplete(paramArrayOfByte.length, width, height);
+                        }
+                    }.run();
                 }
 
                 //拍照
                 if (isTakePicture) {
                     isTakePicture = false;
                     if (listener != null)
-                        listener.takePicture(paramArrayOfByte, width, height);
+                        new CallbackBase() {
+                            @Override
+                            public void callback() {
+                                listener.takePicture(paramArrayOfByte, width, height);
+                            }
+                        }.run();
                 }
 
                 if ((width != this.mWidth) || (height != this.mHeight)) {
@@ -561,6 +635,7 @@ public class HSLCameraManager {
     }
 
     public interface RenderListener {
+
         void initComplete(int size, int width, int height);
 
         void takePicture(byte[] imageBuffer, int width, int height);
@@ -589,7 +664,7 @@ public class HSLCameraManager {
             if (cam != null) {
                 mPlaying = cam;
                 new LoadTask().execute(cam.mStatus.getHandle());
-            }else{
+            } else {
                 trace("指定播放摄像头为空...");
             }
         }
@@ -611,13 +686,11 @@ public class HSLCameraManager {
             return cameras.toArray(new HSLCamera[0]);
         }
 
-
-
         @Override
         public void stop() {
-            if (mPlaying!=null){
+            if (mPlaying != null) {
                 DeviceSDK.stopPlayStream(mPlaying.mStatus.getHandle());
-                mPlaying=null;
+                mPlaying = null;
             }
         }
 
@@ -627,6 +700,7 @@ public class HSLCameraManager {
                 long userid = arg0[0];
                 DeviceSDK.setRender(userid, mRenderer);
                 DeviceSDK.startPlayStream(userid, 10, 1);
+
                 try {
                     JSONObject obj = new JSONObject();
                     obj.put("param", 13);

@@ -1,17 +1,11 @@
 package mrtech.com.hslcamera;
 
 import android.opengl.GLSurfaceView;
-import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import hsl.p2pipcam.nativecaller.DeviceSDK;
 
 public class CameraListActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -37,19 +31,7 @@ public class CameraListActivity extends AppCompatActivity implements View.OnClic
         setContentView(R.layout.activity_camera_list);
         camManager.init();
         cameraList = camManager.getCameraList();
-
         initView();
-        camManager.setDeviceStatusListener(new DeviceStatusListener() {
-            @Override
-            public void receiveDeviceStatus(long userid, int status) {
-                viewCamera.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        play(0);
-                    }
-                });
-            }
-        });
     }
 
     private void initView() {
@@ -57,7 +39,7 @@ public class CameraListActivity extends AppCompatActivity implements View.OnClic
         ListeningClick(R.id.next_btn);
         ListeningClick(R.id.replay_btn);
         ListeningClick(R.id.close_btn);
-         viewCamera = (TextView) findViewById(R.id.cam_num_view);
+        viewCamera = (TextView) findViewById(R.id.cam_num_view);
         glSurfaceView = (GLSurfaceView) findViewById(R.id.view_gls);
         cameraPlayer = camManager.createCameraPlayer(glSurfaceView);
 //        myRender = new MyRender(glSurfaceView);
@@ -95,23 +77,28 @@ public class CameraListActivity extends AppCompatActivity implements View.OnClic
             trace("play nothing!");
             return;
         }
-        int i = index + idx;
-        if (i < 0) i = 0;
+        int i = index + idx;        if (i < 0) i = 0;
         if (i >= max) i = max - 1;
-        index=i;
-        viewCamera.setText("playing :" +(i+1) + "/" + max);
+        index = i;
+        viewCamera.setText("playing :" + (i + 1) + "/" + max);
         cameraPlayer.play(playingList[i]);
     }
 
     @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
+    protected void onResume() {
+        super.onResume();
+        camManager.setDeviceStatusListener(new DeviceStatusListener() {
+            @Override
+            public void receiveDeviceStatus(long userid, int status) {
+                play(0);
+            }
+        });
         play(0);
     }
 
     @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
+    protected void onPause() {
+        super.onPause();
         cameraPlayer.stop();
     }
 }

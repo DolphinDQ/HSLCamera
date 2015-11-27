@@ -56,40 +56,43 @@ public class TestActivity extends BaseActivity implements View.OnClickListener, 
 //        Intent intent = new Intent(this, BridgeService.class);
 //        startService(intent);
         initView();
-
 //        BridgeService.setDeviceStatusListener(this);
         manager = HSLCameraManager.getInstance();
         manager.init();
-        manager.setDeviceStatusListener(new DeviceStatusListener() {
-            @Override
-            public void receiveDeviceStatus(long userid, int status) {
-                playItem.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        refreshCameraNumber();
-                    }
-                });
-            }
-        });
+        manager.setCallbackLoop(getMainLooper());
         manager.addCamera(new HSLCamera(null, "HSL-118486-DLFHB", "admin", ""));
         manager.addCamera(new HSLCamera(null, "HSL-033860-DWUZF", "admin", ""));
         manager.addCamera(new HSLCamera(null, "HSL-125999-BVHJY", "admin", ""));
+        manager.addCamera(new HSLCamera(null, "HSL-126288-CWMTF", "admin", ""));
         manager.addCamera(new HSLCamera(null, "HSL-124419-UBUFY", "admin", ""));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        manager.setDeviceStatusListener(new DeviceStatusListener() {
+            @Override
+            public void receiveDeviceStatus(long userid, int status) {
+                refreshCameraNumber();
+            }
+        });
         refreshCameraNumber();
     }
 
+
     private void refreshCameraNumber() {
-        int num=0;
+        int num = 0;
         HSLCamera[] cameraList = manager.getCameraList();
         for (HSLCamera hslCamera : cameraList) {
-            if (hslCamera.mStatus.getStatus()==100){
+            if (hslCamera.mStatus.getStatus() == 100) {
                 num++;
             }
         }
-        btnCamera.setText("…„œÒÕ∑("+num+"/"+cameraList.length+")");
+        btnCamera.setText("…„œÒÕ∑(" + num + "/" + cameraList.length + ")");
     }
 
     private void initView() {
+
         deviceIdItem = (EditText) findViewById(R.id.device_id_item);
         statusItem = (TextView) findViewById(R.id.status_item);
         connectItem = (Button) findViewById(R.id.connect_btn);
@@ -109,7 +112,7 @@ public class TestActivity extends BaseActivity implements View.OnClickListener, 
         findViewById(R.id.navigate_to).setOnClickListener(this);
         findViewById(R.id.get_data_btn).setOnClickListener(this);
         findViewById(R.id.auth_btn).setOnClickListener(this);
-         btnCamera =(Button) findViewById(R.id.camara_list_btn);
+        btnCamera = (Button) findViewById(R.id.camara_list_btn);
         btnCamera.setOnClickListener(this);
 //        findViewById(R.id.btnStart).setOnClickListener(this);
     }
