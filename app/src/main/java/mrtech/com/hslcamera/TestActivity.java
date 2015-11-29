@@ -64,6 +64,7 @@ public class TestActivity extends BaseActivity implements View.OnClickListener, 
         manager.addCamera(new HSLCamera(null, "HSL-033860-DWUZF", "admin", ""));
         manager.addCamera(new HSLCamera(null, "HSL-125999-BVHJY", "admin", ""));
         manager.addCamera(new HSLCamera(null, "HSL-126288-CWMTF", "admin", ""));
+        manager.addCamera(new HSLCamera(null, "HSL-126276-EYKNV", "admin", ""));
         manager.addCamera(new HSLCamera(null, "HSL-124419-UBUFY", "admin", ""));
     }
 

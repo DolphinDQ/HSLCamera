@@ -21,9 +21,14 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import hsl.p2pipcam.nativecaller.DeviceSDK;
+import hsl.p2pipcam.util.AudioPlayer;
+import hsl.p2pipcam.util.CustomAudioRecorder;
+import hsl.p2pipcam.util.CustomBuffer;
+import hsl.p2pipcam.util.CustomBufferData;
+import hsl.p2pipcam.util.CustomBufferHead;
 
 /**
- * HSL…„œÒÕ∑π‹¿Ì∆˜°£
+ * HSLÊëÑÂÉèÂ§¥ÁÆ°ÁêÜÂô®„ÄÇ
  * Created by zdqa1 on 2015/11/25.
  */
 public class HSLCameraManager {
@@ -33,10 +38,11 @@ public class HSLCameraManager {
     private SettingsListener settingsListener;
     private RecorderListener recorderListener;
     private PlayListener playListener;
+    private AudioListener audioListener;
     private DeviceStatusListener deviceStatusListener;
     private Handler mHandler;
 
-    private static void trace( String msg) {
+    private static void trace(String msg) {
         Log.e(HSLCameraManager.class.getName(), msg);
     }
 
@@ -48,9 +54,6 @@ public class HSLCameraManager {
         return ourInstance;
     }
 
-    private HSLCameraManager() {
-
-    }
 
     public void init() {
         if (mIsInited) return;
@@ -85,21 +88,23 @@ public class HSLCameraManager {
         return mCameras.toArray(new HSLCamera[mCameras.size()]);
     }
 
-    public HSLPlayer createCameraPlayer(GLSurfaceView glSurfaceView) {
-        VideoRenderer videoRenderer = this.new VideoRenderer(glSurfaceView);
-        glSurfaceView.setRenderer(videoRenderer);
-        return new Player(videoRenderer, this);
-    }
-
     public void removeCamera(HSLCamera cam) {
         long id = cam.mStatus.getHandle();
         DeviceSDK.closeDevice(id);
         mCameras.remove(cam);
     }
 
+    public  void removeAll(){
+        HSLCamera[] cameraList = getCameraList();
+        if (cameraList!=null)
+            for (HSLCamera hslCamera : cameraList) {
+                removeCamera(hslCamera);
+            }
+    }
+
     public void removeCamera(String deviceId) {
         for (HSLCamera cam : mCameras) {
-            if (cam.mCamId .equals( deviceId)) {
+            if (cam.mCamId.equals(deviceId)) {
                 mCameras.remove(cam);
                 return;
             }
@@ -108,13 +113,13 @@ public class HSLCameraManager {
 
     public HSLCamera getCamera(String deviceId) {
         for (HSLCamera cam : mCameras) {
-            if (cam.mCamId.equals( deviceId))
+            if (cam.mCamId.equals(deviceId))
                 return cam;
         }
         return null;
     }
 
-    private HSLCamera getCamera(long handle) {
+    public HSLCamera getCamera(long handle) {
 
         for (HSLCamera cam : mCameras) {
             if (cam.mStatus.getHandle() == handle)
@@ -148,7 +153,17 @@ public class HSLCameraManager {
         }
     }
 
-    //-----------------------“‘œ¬ «ƒ⁄≤ø¿‡---------------------------------------------
+    public HSLPlayer createCameraPlayer(GLSurfaceView glSurfaceView) {
+        VideoRenderer videoRenderer = this.new VideoRenderer(glSurfaceView);
+        glSurfaceView.setRenderer(videoRenderer);
+        return new Player(videoRenderer, this);
+    }
+
+    public HSLCameraController createController(HSLCamera camera) {
+        return this.new CameraController(camera);
+    }
+
+    //-----------------------ÂÜÖÈÉ®Á±ª---------------------------------------------
 
     private abstract class CallbackBase {
 
@@ -206,6 +221,7 @@ public class HSLCameraManager {
     }
 
     private class JNICallback {
+
         public void CallBack_SnapShot(final long UserID, final byte[] buff, final int len) {
         }
 
@@ -238,8 +254,11 @@ public class HSLCameraManager {
             final HSLCamera cam;
             if ((cam = getCamera(UserID)) != null) {
                 ((CameraStatus) cam.mStatus).mStatus = status;
+                if (status != 100) {
+                    ((CameraStatus) cam.mStatus).mIsPlaying = false;
+                }
                 trace("camera " + cam.mCamId + " state changed to " + status);
-                if (status == 101||status==10) {
+                if (status == 101 || status == 10 || status == 11) {
                     new AsyncTask<HSLCamera, Void, Void>() {
                         @Override
                         protected Void doInBackground(HSLCamera... params) {
@@ -282,6 +301,15 @@ public class HSLCameraManager {
                     @Override
                     public void callback() {
                         recorderListener.callBackAudioData(nUserID, pcm, size);
+                    }
+                }.run();
+            }
+//            trace("audio callback..." + size);
+            if (audioListener != null) {
+                new CallbackBase() {
+                    @Override
+                    public void callback() {
+                        audioListener.callBackAudioData(nUserID, pcm, size);
                     }
                 }.run();
             }
@@ -590,7 +618,6 @@ public class HSLCameraManager {
                     }.run();
                 }
 
-                //≈ƒ’’
                 if (isTakePicture) {
                     isTakePicture = false;
                     if (listener != null)
@@ -641,17 +668,29 @@ public class HSLCameraManager {
         void takePicture(byte[] imageBuffer, int width, int height);
     }
 
-    public class Player implements HSLPlayer {
+    public interface AudioListener {
+        void callBackAudioData(long userID, byte[] pcm, int size);
+    }
+
+    private class Player implements HSLPlayer {
 
         private final VideoRenderer mRenderer;
         private final HSLCameraManager mManager;
+        private final CustomBuffer mAudioBuffer;
+        private final AudioPlayer mAudioPlayer;
+        private final CustomAudioRecorder mCustomAudioRecorder;
         private HSLCamera mPlaying;
+        private boolean mAudioOn;
+        private boolean mAudioAlreadyOn;
+        private boolean mTalkOn;
 
         public Player(VideoRenderer videoRenderer, HSLCameraManager manager) {
             mRenderer = videoRenderer;
             mManager = manager;
+            mAudioBuffer = new CustomBuffer();
+            mAudioPlayer = new AudioPlayer(mAudioBuffer);
+            mCustomAudioRecorder = new CustomAudioRecorder(this.new InnerRecordListener());
         }
-
 
         @Override
         public void play(String deviceId) {
@@ -663,9 +702,32 @@ public class HSLCameraManager {
             stop();
             if (cam != null) {
                 mPlaying = cam;
-                new LoadTask().execute(cam.mStatus.getHandle());
+                ((CameraStatus) cam.mStatus).mIsPlaying = true;
+                new AsyncTask<Long, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Long... params) {
+                        long userid = params[0];
+                        DeviceSDK.setRender(userid, mRenderer);
+                        DeviceSDK.startPlayStream(userid, 10, 1);
+
+                        try {
+                            JSONObject obj = new JSONObject();
+                            obj.put("param", 13);
+                            obj.put("value", 1024);
+                            DeviceSDK.setDeviceParam(userid, 0x2026, obj.toString());
+
+                            JSONObject obj1 = new JSONObject();
+                            obj1.put("param", 6);
+                            obj1.put("value", 15);
+                            DeviceSDK.setDeviceParam(userid, 0x2026, obj1.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    }
+                }.execute(cam.mStatus.getHandle());
             } else {
-                trace("÷∏∂®≤•∑≈…„œÒÕ∑Œ™ø’...");
+                trace("Êú™Áü•ÊëÑÂÉèÂ§¥...");
             }
         }
 
@@ -689,38 +751,177 @@ public class HSLCameraManager {
         @Override
         public void stop() {
             if (mPlaying != null) {
+                setAudio(false);
+                setTalk(false);
                 DeviceSDK.stopPlayStream(mPlaying.mStatus.getHandle());
+                ((CameraStatus) mPlaying.mStatus).mIsPlaying = false;
                 mPlaying = null;
-            }
-        }
-
-        private class LoadTask extends AsyncTask<Long, Void, Void> {
-            @Override
-            protected Void doInBackground(Long... arg0) {
-                long userid = arg0[0];
-                DeviceSDK.setRender(userid, mRenderer);
-                DeviceSDK.startPlayStream(userid, 10, 1);
-
-                try {
-                    JSONObject obj = new JSONObject();
-                    obj.put("param", 13);
-                    obj.put("value", 1024);
-                    DeviceSDK.setDeviceParam(userid, 0x2026, obj.toString());
-
-                    JSONObject obj1 = new JSONObject();
-                    obj1.put("param", 6);
-                    obj1.put("value", 15);
-                    DeviceSDK.setDeviceParam(userid, 0x2026, obj1.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                return null;
             }
         }
 
         @Override
         public void setRanderListener(RenderListener listener) {
             mRenderer.setListener(listener);
+        }
+
+        @Override
+        public void setAudio(boolean on) {
+            HSLCamera cam = getPlaying();
+            if (cam == null) return;
+            synchronized (Player.this) {
+                audioListener = Player.this.new InnerAudioListener();
+                long userid = cam.mStatus.getHandle();
+                if (mAudioOn == on) return;
+                trace("set audio :" + on);
+                if (mAudioOn = on) {
+                    mAudioBuffer.ClearAll();
+                    mAudioPlayer.AudioPlayStart();
+
+
+                    DeviceSDK.startPlayAudio(userid, 1);
+                } else {
+                    DeviceSDK.stopPlayAudio(userid);
+                    mAudioBuffer.ClearAll();
+                    mAudioPlayer.AudioPlayStop();
+                }
+            }
+        }
+
+        @Override
+        public void autoPlay() {
+            HSLCamera playing = getPlaying();
+            if (playing!=null){
+                play(playing);
+            }else {
+                for (HSLCamera hslCamera : getPlayingList()) {
+                    if (hslCamera.mStatus.getStatus()==100) {
+                        play(hslCamera);
+                        return;
+                    }
+                }
+            }
+        }
+
+        @Override
+        public boolean isAudioOn() {
+            return mAudioOn;
+        }
+
+        @Override
+        public void setTalk(boolean on) {
+            HSLCamera cam = getPlaying();
+            if (cam == null) return;
+            long userid = cam.mStatus.getHandle();
+
+            synchronized (Player.this) {
+                if (mTalkOn == on) return;
+                trace("set talk :" + on);
+                if (mTalkOn = on) {
+                    // ÂØÆ?ÊÉéÁÄµÁ°ÖÓÜâÈóá?Óõ¶ÈçèÊäΩÊ£¥ÁíáÓÖ¢ÁÖ∂ÈäÜ?
+                    if (mAudioAlreadyOn = isAudioOn()) {
+                        setAudio(false);
+                    }
+                    DeviceSDK.startTalk(userid);
+                    mCustomAudioRecorder.StartRecord();
+                } else {
+                    DeviceSDK.stopTalk(userid);
+                    mCustomAudioRecorder.StopRecord();
+                    setAudio(mAudioAlreadyOn);
+                    mAudioAlreadyOn = false;
+                }
+            }
+        }
+
+        @Override
+        public boolean isTalkOn() {
+            return mTalkOn;
+        }
+
+        private class InnerAudioListener implements AudioListener {
+            @Override
+            public void callBackAudioData(long userID, byte[] pcm, int size) {
+                HSLCamera cam = getPlaying();
+                if (cam == null) return;
+                if (userID == cam.mStatus.getHandle()) {
+                    CustomBufferHead head = new CustomBufferHead();
+                    CustomBufferData data = new CustomBufferData();
+                    head.length = size;
+                    head.startcode = 0xff00ff;
+                    data.head = head;
+                    data.data = pcm;
+                    if (mAudioPlayer.isAudioPlaying())
+                        mAudioBuffer.addData(data);
+                }
+            }
+
+        }
+
+        private class InnerRecordListener implements CustomAudioRecorder.AudioRecordResult {
+            @Override
+            public void AudioRecordData(byte[] data, int len) {
+                HSLCamera cam = getPlaying();
+                if (cam == null || len <= 0) return;
+                DeviceSDK.SendTalkData(cam.mStatus.getHandle(), data, len);
+            }
+        }
+    }
+
+    private class CameraController implements HSLCameraController {
+
+        public CameraController(HSLCamera camera) {
+            mCurrent = camera;
+        }
+
+        private final HSLCamera mCurrent;
+
+        private void ptzContrl(final HSLCamera cam, final int cmd) {
+            if (cam == null) return;
+            if (!cam.mStatus.isPlaying()) {
+                trace("ÈéΩÂã´ÂÑöÊæ∂Â≠òÊπ≠ÈéµÊí≥Á¥ë...");
+                return;
+            }
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    synchronized (CameraController.this) {
+                        try {
+                            trace("ptz command:" + cmd);
+                            DeviceSDK.ptzControl(cam.mStatus.getHandle(), cmd);
+                            Thread.sleep(1000);
+                            DeviceSDK.ptzControl(cam.mStatus.getHandle(), cmd + 1);
+                        } catch (Exception ex) {
+                            trace("ptz control error", ex);
+                        }
+                    }
+                }
+
+            }).run();
+
+        }
+
+        @Override
+        public void ptzUp() {
+            ptzContrl(getCurrent(), 0);
+        }
+
+        @Override
+        public void ptzDown() {
+            ptzContrl(getCurrent(), 2);
+        }
+
+        @Override
+        public HSLCamera getCurrent() {
+            return mCurrent;
+        }
+
+        @Override
+        public void ptzLeft() {
+            ptzContrl(getCurrent(), 4);
+        }
+
+        @Override
+        public void ptzRight() {
+            ptzContrl(getCurrent(), 6);
         }
     }
 }

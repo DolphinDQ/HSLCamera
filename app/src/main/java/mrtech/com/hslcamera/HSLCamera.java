@@ -3,7 +3,7 @@ package mrtech.com.hslcamera;
 import java.util.Objects;
 
 /**
- * HSL ÉãÏñÍ·¶ÔÏó½Ó¿Ú¡£
+ * HSL æ‘„åƒå¤´å¯¹è±¡æ¥å£ã€‚i
  * Created by zdqa1 on 2015/11/25.
  */
 public class HSLCamera {
@@ -21,7 +21,7 @@ public class HSLCamera {
     public HSLCameraStatus mStatus;
 
     /**
-     * HSLÉãÏñÍ·×´Ì¬ÃèÊö½Ó¿Ú¡£
+     * HSLæ‘„åƒå¤´çŠ¶æ€æè¿°æ¥å£ã€‚
      * Created by zdqa1 on 2015/11/26.
      */
     public interface HSLCameraStatus {
@@ -30,5 +30,7 @@ public class HSLCamera {
         int getStatus();
 
         boolean isPlaying();
+
+
     }
 }

@@ -1,52 +1,79 @@
 package mrtech.com.hslcamera;
 
 /**
+ * å®ç°è§†é¢‘è¯­éŸ³æ’­æ”¾ï¼Œå®ç°å¯¹è®²åŠŸèƒ½ã€‚
  * Created by zdqa1 on 2015/11/26.
  */
 
 /**
- * HSL ÉãÏñÍ·²¥·ÅÆ÷
+ * HSL æ‘„åƒå¤´æ’­æ”¾å™¨
  * Created by zdqa1 on 2015/11/26.
  */
 public interface HSLPlayer {
 
     /**
-     * ²¥·ÅÖ¸¶¨IDµÄÊÇÏñÍ·¡£
+     * æ’­æ”¾æŒ‡å®šIDçš„æ˜¯åƒå¤´ã€‚
      *
-     * @param deviceId ÉãÏñÍ·ID¡£
+     * @param deviceId æ‘„åƒå¤´IDã€‚
      */
     void play(String deviceId);
 
     /**
-     * ²¥·ÅÖ¸¶¨ÉãÏñÍ·
+     * æ’­æ”¾æŒ‡å®šæ‘„åƒå¤´
      *
-     * @param cam Ö¸¶¨ÉãÏñÍ·
+     * @param cam æŒ‡å®šæ‘„åƒå¤´
      */
     void play(HSLCamera cam);
 
     /**
-     * »ñÈ¡µ±Ç°²¥·ÅÉãÏñÍ·¶ÔÏó¡£
+     * è·å–å½“å‰æ’­æ”¾æ‘„åƒå¤´å¯¹è±¡ã€‚
      *
-     * @return µ±Ç°²¥·ÅÉãÏñÍ·¶ÔÏó¡£
+     * @return å½“å‰æ’­æ”¾æ‘„åƒå¤´å¯¹è±¡ã€‚
      */
     HSLCamera getPlaying();
 
     /**
-     * »ñÈ¡µ±ÆÚ²¥·ÅÁĞ±í¡£
+     * è·å–å½“æœŸæ’­æ”¾åˆ—è¡¨ã€‚
      *
-     * @return µ±ÆÚ²¥·ÅÁĞ±í¡£
+     * @return å½“æœŸæ’­æ”¾åˆ—è¡¨ã€‚
      */
     HSLCamera[] getPlayingList();
 
     /**
-     * Í£Ö¹²¥·Å¡£
+     * åœæ­¢æ’­æ”¾ã€‚
      */
     void stop();
 
     /**
-     * ÉèÖÃäÖÈ¾»Øµ÷
+     * è®¾ç½®æ¸²æŸ“å›è°ƒ
      *
      * @param listener
      */
     void setRanderListener(HSLCameraManager.RenderListener listener);
+
+    /**
+     * å¼€å¯æˆ–å…³é—­è§†é¢‘å£°éŸ³ã€‚
+     * @param on å¼€ä¸ºtrue
+     */
+    void setAudio(boolean on);
+
+    void autoPlay();
+
+    /**
+     * è·å–å½“å‰å£°éŸ³çŠ¶æ€ã€‚
+     * @return å¼€ä¸ºtrue
+     */
+    boolean isAudioOn();
+
+    /**
+     * è¯­éŸ³å¯¹è®²å¼€å¯æˆ–å…³é—­
+     * @param on å¼€å¯ä¸ºtrue
+     */
+    void setTalk(boolean on);
+
+    /**
+     * è·å–è¯­éŸ³å¯¹è®²çŠ¶æ€ã€‚
+     * @return å¼€å¯è¿”å›true
+     */
+    boolean isTalkOn();
 }
