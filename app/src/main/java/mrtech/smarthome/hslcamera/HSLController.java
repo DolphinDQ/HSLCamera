@@ -8,6 +8,9 @@ public interface HSLController {
 
     HSLCamera getCurrent();
 
+    /**
+     * 云台左
+     */
     void ptzLeft();
 
     void ptzRight();
@@ -15,6 +18,7 @@ public interface HSLController {
     void ptzUp();
 
     void ptzDown();
+
 
 
 }

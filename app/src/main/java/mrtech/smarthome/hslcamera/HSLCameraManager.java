@@ -134,7 +134,6 @@ public class HSLCameraManager {
     }
 
     public void setPlayListener(PlayListener listener) {
-
         playListener = listener;
     }
 
@@ -161,7 +160,7 @@ public class HSLCameraManager {
     }
 
     public HSLController createController(HSLCamera camera) {
-        return this.new CameraController(camera);
+        return this.new CameraController(this, camera);
     }
 
     //----------------------the inner class--------------------------------------------
@@ -857,8 +856,11 @@ public class HSLCameraManager {
 
     private class CameraController implements HSLController {
 
-        public CameraController(HSLCamera camera) {
+        private final HSLCameraManager mManager;
+
+        public CameraController(HSLCameraManager manager, HSLCamera camera) {
             mCurrent = camera;
+            mManager=manager;
         }
 
         private final HSLCamera mCurrent;
@@ -869,9 +871,9 @@ public class HSLCameraManager {
                 trace("device must playing...");
                 return;
             }
-            new Thread(new Runnable() {
+            new AsyncTask<Void,Void,Void>(){
                 @Override
-                public void run() {
+                protected Void doInBackground(Void... params) {
                     synchronized (CameraController.this) {
                         try {
                             trace("ptz command:" + cmd);
@@ -882,9 +884,9 @@ public class HSLCameraManager {
                             trace("ptz control error", ex);
                         }
                     }
+                    return null;
                 }
-
-            }).run();
+            }.execute();
 
         }
 
@@ -898,6 +900,7 @@ public class HSLCameraManager {
             ptzContrl(getCurrent(), 2);
         }
 
+      
         @Override
         public HSLCamera getCurrent() {
             return mCurrent;
