@@ -6,6 +6,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import hsl.p2pipcam.nativecaller.NativeCaller;
+import mrtech.smarthome.hslcamera.SettingsListener;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,7 +21,7 @@ import android.widget.Toast;
 
 //import com.test.R;
 
-public class DeviceSettingsActivity extends Activity implements SettingsListener ,OnClickListener
+public class DeviceSettingsActivity extends Activity implements SettingsListener,OnClickListener
 {
 	private EditText info_item;
 	private Button wifi_get_item,wifi_set_item;

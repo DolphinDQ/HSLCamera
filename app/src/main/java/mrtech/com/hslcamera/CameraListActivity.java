@@ -10,6 +10,12 @@ import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import mrtech.smarthome.hslcamera.DeviceStatusListener;
+import mrtech.smarthome.hslcamera.HSLCamera;
+import mrtech.smarthome.hslcamera.HSLController;
+import mrtech.smarthome.hslcamera.HSLCameraManager;
+import mrtech.smarthome.hslcamera.HSLPlayer;
+
 public class CameraListActivity extends AppCompatActivity {
 
     private GLSurfaceView glSurfaceView;
@@ -76,7 +82,7 @@ public class CameraListActivity extends AppCompatActivity {
         ListeningClick(R.id.close_btn, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cameraPlayer.stop();
+                camManager.removeCamera(cameraPlayer.getPlaying());
             }
         });
         viewCamera = (TextView) findViewById(R.id.cam_num_view);
@@ -126,7 +132,7 @@ public class CameraListActivity extends AppCompatActivity {
     private class PtzGestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            HSLCameraController controller = camManager.createController(cameraPlayer.getPlaying());
+            HSLController controller = camManager.createController(cameraPlayer.getPlaying());
             float vx = Math.abs(velocityX);
             float vy = Math.abs(velocityY);
             if (vx > vy) {

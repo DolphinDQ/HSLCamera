@@ -1,4 +1,4 @@
-package mrtech.com.hslcamera;
+package mrtech.smarthome.hslcamera;
 
 import android.bluetooth.BluetoothClass;
 import android.opengl.GLES20;
@@ -28,7 +28,7 @@ import hsl.p2pipcam.util.CustomBufferData;
 import hsl.p2pipcam.util.CustomBufferHead;
 
 /**
- * HSL摄像头管理器。
+ * manager of  HSL camera . keep the connection
  * Created by zdqa1 on 2015/11/25.
  */
 public class HSLCameraManager {
@@ -54,7 +54,6 @@ public class HSLCameraManager {
         return ourInstance;
     }
 
-
     public void init() {
         if (mIsInited) return;
         mIsInited = true;
@@ -68,6 +67,7 @@ public class HSLCameraManager {
         if (mIsInited) {
             mIsInited = false;
             trace("DeviceSDK destroy...");
+            removeAll();
             DeviceSDK.unInitSearchDevice();
         }
     }
@@ -91,12 +91,13 @@ public class HSLCameraManager {
     public void removeCamera(HSLCamera cam) {
         long id = cam.mStatus.getHandle();
         DeviceSDK.closeDevice(id);
+        DeviceSDK.destoryDevice(id);
         mCameras.remove(cam);
     }
 
-    public  void removeAll(){
+    public void removeAll() {
         HSLCamera[] cameraList = getCameraList();
-        if (cameraList!=null)
+        if (cameraList != null)
             for (HSLCamera hslCamera : cameraList) {
                 removeCamera(hslCamera);
             }
@@ -159,11 +160,11 @@ public class HSLCameraManager {
         return new Player(videoRenderer, this);
     }
 
-    public HSLCameraController createController(HSLCamera camera) {
+    public HSLController createController(HSLCamera camera) {
         return this.new CameraController(camera);
     }
 
-    //-----------------------内部类---------------------------------------------
+    //----------------------the inner class--------------------------------------------
 
     private abstract class CallbackBase {
 
@@ -226,26 +227,24 @@ public class HSLCameraManager {
         }
 
         public void CallBack_GetParam(final long UserID, final long nType, final String param) {
-            if (settingsListener != null) {
-                new CallbackBase() {
-                    @Override
-                    public void callback() {
+            new CallbackBase() {
+                @Override
+                public void callback() {
+                    if (settingsListener != null)
                         settingsListener.callBack_getParam(UserID, nType, param);
-                    }
-                }.run();
-            }
+                }
+            }.run();
         }
 
         public void CallBack_SetParam(final long UserID, final long nType, final int nResult) {
-            if (settingsListener != null) {
-                if (mHandler != null) {
-                    new CallbackBase() {
-                        @Override
-                        public void callback() {
+            if (mHandler != null) {
+                new CallbackBase() {
+                    @Override
+                    public void callback() {
+                        if (settingsListener != null)
                             settingsListener.callBack_setParam(UserID, nType, nResult);
-                        }
-                    }.run();
-                }
+                    }
+                }.run();
             }
         }
 
@@ -258,7 +257,7 @@ public class HSLCameraManager {
                     ((CameraStatus) cam.mStatus).mIsPlaying = false;
                 }
                 trace("camera " + cam.mCamId + " state changed to " + status);
-                if (status == 101 || status == 10 || status == 11) {
+                if (status == 101 || status == 10 || status == 11 || status == 9 || status == 2) {
                     new AsyncTask<HSLCamera, Void, Void>() {
                         @Override
                         protected Void doInBackground(HSLCamera... params) {
@@ -274,14 +273,13 @@ public class HSLCameraManager {
                     }.execute(cam);
                 }
             }
-            if (deviceStatusListener != null) {
-                new CallbackBase() {
-                    @Override
-                    public void callback() {
+            new CallbackBase() {
+                @Override
+                public void callback() {
+                    if (deviceStatusListener != null)
                         deviceStatusListener.receiveDeviceStatus(UserID, status);
-                    }
-                }.run();
-            }
+                }
+            }.run();
         }
 
         public void VideoData(long UserID, byte[] VideoBuf, int h264Data, int nLen, int Width, int Height, int time) {
@@ -289,40 +287,38 @@ public class HSLCameraManager {
         }
 
         public void callBackAudioData(final long nUserID, final byte[] pcm, final int size) {
-            if (playListener != null)
-                new CallbackBase() {
-                    @Override
-                    public void callback() {
+            new CallbackBase() {
+                @Override
+                public void callback() {
+                    if (playListener != null)
                         playListener.callBackAudioData(nUserID, pcm, size);
-                    }
-                }.run();
-            if (recorderListener != null) {
-                new CallbackBase() {
-                    @Override
-                    public void callback() {
+                }
+            }.run();
+            new CallbackBase() {
+                @Override
+                public void callback() {
+                    if (recorderListener != null)
                         recorderListener.callBackAudioData(nUserID, pcm, size);
-                    }
-                }.run();
-            }
+                }
+            }.run();
 //            trace("audio callback..." + size);
-            if (audioListener != null) {
-                new CallbackBase() {
-                    @Override
-                    public void callback() {
+            new CallbackBase() {
+                @Override
+                public void callback() {
+                    if (audioListener != null)
                         audioListener.callBackAudioData(nUserID, pcm, size);
-                    }
-                }.run();
-            }
+                }
+            }.run();
         }
 
         public void CallBack_RecordFileList(final long UserID, final int filecount, final String fname, final String strDate, final int size) {
-            if (settingsListener != null)
-                new CallbackBase() {
-                    @Override
-                    public void callback() {
+            new CallbackBase() {
+                @Override
+                public void callback() {
+                    if (settingsListener != null)
                         settingsListener.recordFileList(UserID, filecount, fname, strDate, size);
-                    }
-                }.run();
+                }
+            }.run();
         }
 
         public void CallBack_P2PMode(long UserID, int nType) {
@@ -661,14 +657,7 @@ public class HSLCameraManager {
         }
     }
 
-    public interface RenderListener {
-
-        void initComplete(int size, int width, int height);
-
-        void takePicture(byte[] imageBuffer, int width, int height);
-    }
-
-    public interface AudioListener {
+    private interface AudioListener {
         void callBackAudioData(long userID, byte[] pcm, int size);
     }
 
@@ -727,7 +716,7 @@ public class HSLCameraManager {
                     }
                 }.execute(cam.mStatus.getHandle());
             } else {
-                trace("未知摄像头...");
+                trace("Can't play NULL camera ...");
             }
         }
 
@@ -760,7 +749,7 @@ public class HSLCameraManager {
         }
 
         @Override
-        public void setRanderListener(RenderListener listener) {
+        public void setRenderListener(RenderListener listener) {
             mRenderer.setListener(listener);
         }
 
@@ -790,11 +779,11 @@ public class HSLCameraManager {
         @Override
         public void autoPlay() {
             HSLCamera playing = getPlaying();
-            if (playing!=null){
+            if (playing != null) {
                 play(playing);
-            }else {
+            } else {
                 for (HSLCamera hslCamera : getPlayingList()) {
-                    if (hslCamera.mStatus.getStatus()==100) {
+                    if (hslCamera.mStatus.getStatus() == 100) {
                         play(hslCamera);
                         return;
                     }
@@ -817,7 +806,7 @@ public class HSLCameraManager {
                 if (mTalkOn == on) return;
                 trace("set talk :" + on);
                 if (mTalkOn = on) {
-                    // 寮?惎瀵硅闇?鍏抽棴璇煶銆?
+                    //
                     if (mAudioAlreadyOn = isAudioOn()) {
                         setAudio(false);
                     }
@@ -866,7 +855,7 @@ public class HSLCameraManager {
         }
     }
 
-    private class CameraController implements HSLCameraController {
+    private class CameraController implements HSLController {
 
         public CameraController(HSLCamera camera) {
             mCurrent = camera;
@@ -877,7 +866,7 @@ public class HSLCameraManager {
         private void ptzContrl(final HSLCamera cam, final int cmd) {
             if (cam == null) return;
             if (!cam.mStatus.isPlaying()) {
-                trace("鎽勫儚澶存湭鎵撳紑...");
+                trace("device must playing...");
                 return;
             }
             new Thread(new Runnable() {

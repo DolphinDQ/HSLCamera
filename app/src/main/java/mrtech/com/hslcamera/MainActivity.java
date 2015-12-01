@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import hsl.p2pipcam.nativecaller.DeviceSDK;
 import mrtech.com.hslcamera.MyRender.RenderListener;
+import mrtech.smarthome.hslcamera.PlayListener;
 
 public class MainActivity extends AppCompatActivity implements RenderListener,PlayListener {
 

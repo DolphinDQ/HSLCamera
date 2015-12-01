@@ -1,4 +1,4 @@
-package mrtech.com.hslcamera;
+package mrtech.smarthome.hslcamera;
 
 
 public interface DeviceStatusListener {

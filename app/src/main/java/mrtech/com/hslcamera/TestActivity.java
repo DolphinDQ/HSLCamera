@@ -6,6 +6,9 @@ import android.view.View;
 
 
 import hsl.p2pipcam.nativecaller.DeviceSDK;
+import mrtech.smarthome.hslcamera.DeviceStatusListener;
+import mrtech.smarthome.hslcamera.HSLCamera;
+import mrtech.smarthome.hslcamera.HSLCameraManager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -156,7 +159,7 @@ public class TestActivity extends BaseActivity implements View.OnClickListener, 
                 cancelTest();
                 break;
             case R.id.navigate_to:
-                naviget(ListTestActivity.class);
+                naviget(P2PTestActivity.class);
                 break;
             case R.id.camara_list_btn:
                 naviget(CameraListActivity.class);

@@ -5,6 +5,11 @@ package mrtech.com.hslcamera;
 
 
 import hsl.p2pipcam.nativecaller.DeviceSDK;
+import mrtech.smarthome.hslcamera.DeviceStatusListener;
+import mrtech.smarthome.hslcamera.PlayListener;
+import mrtech.smarthome.hslcamera.RecorderListener;
+import mrtech.smarthome.hslcamera.SettingsListener;
+
 import android.app.Service;
 import android.bluetooth.BluetoothClass.Device;
 import android.content.Intent;

@@ -1,9 +1,9 @@
-package mrtech.com.hslcamera;
+package mrtech.smarthome.hslcamera;
 
 import java.util.Objects;
 
 /**
- * HSL 摄像头对象接口。i
+ * HSL camera object
  * Created by zdqa1 on 2015/11/25.
  */
 public class HSLCamera {
@@ -21,7 +21,7 @@ public class HSLCamera {
     public HSLCameraStatus mStatus;
 
     /**
-     * HSL摄像头状态描述接口。
+     * HSL camera status description
      * Created by zdqa1 on 2015/11/26.
      */
     public interface HSLCameraStatus {
