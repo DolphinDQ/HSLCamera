@@ -19,7 +19,6 @@ import mrtech.smarthome.hslcamera.HSLPlayer;
 public class CameraListActivity extends AppCompatActivity {
 
     private GLSurfaceView glSurfaceView;
-    private MyRender myRender;
     private HSLCameraManager camManager;
     private int index;
     private HSLCamera[] cameraList;

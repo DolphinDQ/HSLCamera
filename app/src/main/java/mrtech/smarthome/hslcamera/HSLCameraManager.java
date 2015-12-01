@@ -443,7 +443,7 @@ public class HSLCameraManager {
             fragmentShaderCode += "precision mediump float;  \n";
             fragmentShaderCode += "varying vec4 VaryingTexCoord0; \n";
             fragmentShaderCode += "vec4 color;\n";
-            fragmentShaderCode += "void main()\n";
+            fragmentShaderCode += "void activity_main()\n";
             fragmentShaderCode += "{\n";
             fragmentShaderCode += "float yuv0 = (texture2D(Ytex,VaryingTexCoord0.xy)).r;\n";
             fragmentShaderCode += "float yuv1 = (texture2D(Utex,VaryingTexCoord0.xy)).r;\n";
@@ -462,7 +462,7 @@ public class HSLCameraManager {
             vertexShaderCode += "attribute vec4 vPosition;  \n";
             vertexShaderCode += "attribute vec4 myTexCoord; \n";
             vertexShaderCode += "varying vec4 VaryingTexCoord0; \n";
-            vertexShaderCode += "void main(){               \n";
+            vertexShaderCode += "void activity_main(){               \n";
             vertexShaderCode += "VaryingTexCoord0 = myTexCoord; \n";
             vertexShaderCode += "gl_Position = vPosition; \n";
             vertexShaderCode += "}  \n";
@@ -900,7 +900,6 @@ public class HSLCameraManager {
             ptzContrl(getCurrent(), 2);
         }
 
-      
         @Override
         public HSLCamera getCurrent() {
             return mCurrent;
