@@ -15,23 +15,23 @@ public class HSLCamera {
     }
 
     /**
-     * 摄像头数据，保留
+     * user data
      */
     public final Object mSource;
     /**
-     * P2P连接ID
+     *  P2P connection string(deviceId)
      */
     public final String mCamId;
     /**
-     * 登录用户
+     * login user
      */
     public final String mUserName;
     /**
-     * 登录密码
+     * login password
      */
     public final String mPassword;
     /**
-     * 设备状态
+     * camera status
      */
     public HSLCameraStatus mStatus;
 
@@ -41,19 +41,19 @@ public class HSLCamera {
      */
     public interface HSLCameraStatus {
         /**
-         * 摄像头连接句柄，对应文档userId
+         * camera connection handle(userId)
          * @return
          */
         long getHandle();
 
         /**
-         * 摄像头状态
-         * @return 100是成功
+         * camera status
+         * @return 100 success
          */
         int getStatus();
 
         /**
-         * 是否处于播放中
+         * is camera play
          * @return
          */
         boolean isPlaying();

@@ -99,62 +99,62 @@ public class P2PTestActivity extends AppCompatActivity implements View.OnClickLi
                 }
                 last = now;
             }
-            return " \nµ¥²½ºÄÊ±" + step + "ms...×ÜºÄÊ±" + total + "ms";
+            return " \nå•æ­¥è€—æ—¶" + step + "ms...æ€»è€—æ—¶" + total + "ms";
         }
 
         @Override
         protected Void doInBackground(Void... params) {
             last=  start = Calendar.getInstance();
-            trace("Æô¶¯ÈÎÎñ...");
+            trace("å¯åŠ¨ä»»åŠ¡...");
             int handle = NewAllStreamParser.DNPCreatePortServer(
                     "cloud.hzmr-tech.com", 8300, "sdktest", "sdktest");
             if (handle == 0) {
-                trace("´´½¨Ó³Éä·şÎñÊ§°Ü" + getDuring());
+                trace("åˆ›å»ºæ˜ å°„æœåŠ¡å¤±è´¥" + getDuring());
                 return null;
             } else
-                trace("´´½¨Ó³Éä·şÎñ³É¹¦" + getDuring());
+                trace("åˆ›å»ºæ˜ å°„æœåŠ¡æˆåŠŸ" + getDuring());
 //            int state = NewAllStreamParser.DNPCheckSrvConnState(handle);
 //            int checkTimes = 0;
             try {
-//                while (state != 2) { // 2 Îª ÒÑÁ¬½Ó
+//                while (state != 2) { // 2 ä¸º å·²è¿æ¥
 //                    if (checkTimes >= 30) {
-//                        trace("Á¬½Ó³¬Ê±¡£¡£" + getDuring());
+//                        trace("è¿æ¥è¶…æ—¶ã€‚ã€‚" + getDuring());
 //                        return null;
 //                    }
 //                    if (isCancelled()) {
-//                        trace("ÈÎÎñÈ¡Ïû¡£¡£" + getDuring());
+//                        trace("ä»»åŠ¡å–æ¶ˆã€‚ã€‚" + getDuring());
 //                        return null;
 //                    }
 //                    Thread.sleep(333);
 //                    checkTimes++;
 //                    state = NewAllStreamParser.DNPCheckSrvConnState(handle);
 //                }
-//                trace("Á¬½Ó³É¹¦" + getDuring());
+//                trace("è¿æ¥æˆåŠŸ" + getDuring());
                 int port = NewAllStreamParser.DNPAddPort(handle, p2pId);
                 if (port == 0) {
-                    trace("´´½¨¶Ë¿ÚÊ§°Ü" + getDuring());
+                    trace("åˆ›å»ºç«¯å£å¤±è´¥" + getDuring());
                     return null;
                 } else
-                    trace("´´½¨¶Ë¿Ú³É¹¦£º " + port + getDuring());
+                    trace("åˆ›å»ºç«¯å£æˆåŠŸï¼š " + port + getDuring());
                 /**
-                 * Í¨ĞÅ´¦Àí
+                 * é€šä¿¡å¤„ç†
                  */
                 NewAllStreamParser.DNPDelPort(handle, port);
-                trace("É¾³ı¶Ë¿Ú" + getDuring());
+                trace("åˆ é™¤ç«¯å£" + getDuring());
                 NewAllStreamParser.DNPDestroyPortServer(handle);
-                trace("Ïú»ÙÓ³Éä·şÎñ" + getDuring());
+                trace("é”€æ¯æ˜ å°„æœåŠ¡" + getDuring());
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-                trace("ÈÎÎñÒì³£" + getDuring());
+                trace("ä»»åŠ¡å¼‚å¸¸" + getDuring());
             }
-            trace("ÈÎÎñÍê³É..." + getDuring());
+            trace("ä»»åŠ¡å®Œæˆ..." + getDuring());
             return null;
         }
 
         @Override
         protected void onCancelled() {
-            trace("ÈÎÎñÈ¡Ïû...");
+            trace("ä»»åŠ¡å–æ¶ˆ...");
             super.onCancelled();
         }
     }

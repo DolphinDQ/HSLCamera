@@ -1,355 +1,353 @@
 package hsl.p2pipcam.nativecaller;
 
+public class DeviceSDK {
+    /**
+     * åˆå§‹åŒ–app
+     *
+     * @param serv
+     * @return
+     */
+    public static int initialize(String serv) {
+        return NativeCaller.InitLib(serv);
+    }
 
-public class DeviceSDK 
-{
-	/**
-	 * ³õÊ¼»¯app
-	 * @param serv
-	 * @return
-	 */
-	public static int initialize(String serv)
-	{
-		return NativeCaller.InitLib(serv);
-	}
-	
-	/**
-	 * ËÑË÷Ç°³õÊ¼»¯
-	 * @return
-	 */
-	public static int initSearchDevice()
-	{
-		return NativeCaller.SearchDeviceInit();
-	}
-	
-	/**
-	 * ÉèÖÃËÑË÷»Øµ÷¶ÔÏó
-	 * @param object
-	 */
-	public static void setSearchCallback(Object object)
-	{
-		NativeCaller.SetSearchCallBack(object);
-	}
-	
-	/**
-	 * ÉèÖÃ»Øµ÷¶ÔÏó
-	 * @param object
-	 */
-	public static void setCallback(Object object)
-	{
-		NativeCaller.SetCallBack(object);
-	}
-	
-	/**
-	 * ÍË³öËÑË÷
-	 * @return
-	 */
-	public static int unInitSearchDevice()
-	{
-		return NativeCaller.SearchDeviceUninit();
-	}
-	
-	/**
-	 * ËÑË÷Éè±¸
-	 * @return
-	 */
-	public static int searchDevice()
-	{
-		return NativeCaller.SearchDevice();
-	}
-	
-	/**
-	 * ´´½¨Éè±¸
-	 * @param strUsername
-	 * @param strPwd
-	 * @param strHost
-	 * @param nPort
-	 * @param StrDid
-	 * @param NetType 0=TCP ,1=P2P
-	 * @return userId
-	 */
-	public static long createDevice(String strUsername, String strPwd,String strHost, int nPort, String StrDid, int NetType)
-	{
-		return NativeCaller.CreateInstance(strUsername, strPwd, strHost, nPort, StrDid, NetType);
-	}
-	
-	/**
-	 * Ïú»ÙÉè±¸
-	 * @param UserID
-	 * @return
-	 */
-	public static int destoryDevice(long UserID)
-	{
-		return NativeCaller.DestroyInstance(UserID);
-	}
-	
-	/**
-	 * Éè±¸¿ªÆô
-	 * @param userID
-	 * @return
-	 */
-	public static int openDevice(long userID)
-	{
-		return NativeCaller.Start(userID);
-	}
-	
-	/**
-	 * Éè±¸¹Ø±Õ
-	 * @param userID
-	 * @return
-	 */
-	public static int closeDevice(long userID)
-	{
-		return NativeCaller.Stop(userID);
-	}
-	
-	/**
-	 * »ñÈ¡Éè±¸²ÎÊı
-	 * @param userID
-	 * @param nType
-	 * @return
-	 */
-	public static int getDeviceParam(long userID,int nType)
-	{
-		return NativeCaller.GetParam(userID, nType);
-	}
-	
-	/**
-	 * ÉèÖÃÉè±¸²ÎÊı
-	 * @param userID
-	 * @param nType
-	 * @param param
-	 * @return
-	 */
-	public static int setDeviceParam(long userID,int nType,String param)
-	{
-		return NativeCaller.SetParam(userID, nType, param);
-	}
-	
-	/**
-	 * ²¥·ÅÊµÊ±ÊÓÆµÁ÷
-	 * @param userID
-	 * @param streamId
-	 * @param subStreamId
-	 * @return
-	 */
-	public static int startPlayStream(long userID, int streamId,int subStreamId)
-	{
-		return NativeCaller.StartStream(userID, streamId, subStreamId);
-	}
-	
-	/**
-	 * ½áÊø²¥·ÅÊÓÆµÁ÷
-	 * @param userID
-	 * @return
-	 */
-	public static int stopPlayStream(long userID)
-	{
-		return NativeCaller.StopStream(userID);
-	}
-	
-	/**
-	 * ÉèÖÃ»­°å
-	 * @param userID
-	 * @param render
-	 */
-	public static void setRender(long userID, Object render)
-	{
-	   NativeCaller.SetRender(userID, render);
-	}
-	
-	/**
-	 * ¿ØÖÆÉè±¸
-	 * @param UserID
-	 * @param nType
-	 * @return
-	 */
-	public static int ptzControl(long UserID, int nType)
-	{
-		return NativeCaller.PtzControl(UserID, nType);
-	}
-	
-	/**
-	 * ²¥·ÅÒôÆµ
-	 * @param UserID
-	 * @param AudioId
-	 * @return
-	 */
-	public static int startPlayAudio(long UserID, int AudioId)
-	{
-		return NativeCaller.StartAudio(UserID, AudioId);
-	}
-	
-	/**
-	 * ½áÊøÒôÆµ²¥·Å
-	 * @param UserID
-	 * @return
-	 */
-	public static int stopPlayAudio(long UserID)
-	{
-		return NativeCaller.StopAudio(UserID);
-	}
-	
-	/**
-	 * ¿ªÊ¼Ëµ»°
-	 * @param nUserID
-	 * @return
-	 */
-	public static int startTalk(long UserID)
-	{
-		return NativeCaller.StartTalk(UserID);
-	}
-	
-	/**
-	 * ½áÊøËµ»°
-	 * @param UserID
-	 * @return
-	 */
-	public static int stopTalk(long UserID)
-	{
-		return NativeCaller.StopTalk(UserID);
-	}
-	
-	/**
-	 * ·¢ËÍËµ»°Êı¾İ
-	 * @param nUserID
-	 * @param data
-	 * @param size
-	 * @return
-	 */
-	public static int SendTalkData(long userID, byte[] data, int size)
-	{
-		return NativeCaller.SendTalkData(userID, data, size);
-	}
-	
-	/**
-	 * Í¼Æ¬Á÷×ª»»
-	 * @param yuv
-	 * @param rgb
-	 * @param width
-	 * @param height
-	 * @return
-	 */
-	public static int YUV420ToRGB565(byte[] yuv, byte[] rgb, int width,int height)
-	{
-		return NativeCaller.YUV420ToRGB565(yuv, rgb, width, height);
-	}
-	
-	/**
-	 * ¿ªÊ¼Â¼Ïñ
-	 * @param filename
-	 * @param forcc
-	 * @param height
-	 * @param width
-	 * @param framerate
-	 * @return
-	 */
-	public static int startRecordVideo(String filename, String forcc, int height,int width, int framerate)
-	{
-		return object.p2pipcam.nativecaller.NativeCaller.OpenAvi(filename, forcc, height, width, framerate);
-	}
-	
-	/**
-	 * Â¼ÏñÊı¾İÁ÷Ğ´Èëµ½ÎÄ¼ş
-	 * @param data
-	 * @param len
-	 * @param keyframe
-	 * @return
-	 */
-	public static int writeVideoData(byte[] data, int len, int keyframe)
-	{
-		return object.p2pipcam.nativecaller.NativeCaller.WriteData(data, len, keyframe);
-	}
-	
-	/**
-	 * ½áÊøÂ¼Ïñ
-	 * @return
-	 */
-	public static int stopRecordVideo()
-	{
-		return object.p2pipcam.nativecaller.NativeCaller.CloseAvi();
-	}
-	
-	/**
-	 * »ñÈ¡Ô¶³ÌÂ¼Ïñ
-	 * @param userid
-	 * @return
-	 */
-	public static int getRecordVideo(long userid,int bYear, int bMon, int bDay,int eYear, int eMon, int eDay)
-	{
-		return NativeCaller.SearchRecordFile(userid, bYear, bMon, bDay, 0, 0, 0, eYear, eMon, eDay, 23, 59, 59);
-	}
-	
-	/**
-	 * ÉèÖÃÂ¼Ïñ²¥·ÅRender
-	 * @param nUserID
-	 * @param render
-	 * @return
-	 */
-	public static int setRecordRender(long nUserID, Object render)
-	{
-		return NativeCaller.SetRecordRender(nUserID, render);
-	}
-	
-	/**
-	 * ¿ªÊ¼²¥·ÅÂ¼Ïñ
-	 * @param nUserID
-	 * @param filename
-	 * @return
-	 */
-	public static int startPlayRecord(long nUserID, String filename,int pos)
-	{
-		return NativeCaller.StartPlayRecord(nUserID, filename,pos);
-	}
-	
-	/**
-	 * ½áÊø²¥·ÅÂ¼Ïñ
-	 * @param nUserID
-	 * @param filename
-	 * @return
-	 */
-	public static int stopPlayRecord(long nUserID, String filename)
-	{
-		return NativeCaller.StopPlayRecord(nUserID, filename);
-	}
-	/**
-	 * µ÷Õû²¥·ÅÎ»ÖÃ
-	 * @param nUserID
-	 * @param filename
-	 * @param pos
-	 * @return
-	 */
-	public static int playRecordPos(long nUserID, String filename, int pos)
-	{
-		return NativeCaller.PlayRecordPos(nUserID, filename, pos);
-	}
-	
-	/**
-	 * ÔİÍ£²¥·Å
-	 * @param nUserID
-	 * @param filename
-	 * @return
-	 */
-	public static int pausePlayRecord(long nUserID, String filename)
-	{
-		return NativeCaller.PausePlayRecord(nUserID, filename);
-	}
-	
-	/**
-	 * ¼ì²âÍøÂç
-	 */
-	public static void networkDetect()
-	{
-		NativeCaller.NetworkDetect();
-	}
-	
-	/**
-	 * ½áÊøapp
-	 * @return
-	 */
-	public static int unInitialize()
-	{
-		return NativeCaller.UnInitLib();
-	}
-	
+    /**
+     * æœç´¢å‰åˆå§‹åŒ–
+     *
+     * @return
+     */
+    public static int initSearchDevice() {
+        return NativeCaller.SearchDeviceInit();
+    }
+
+    /**
+     * è®¾ç½®æœç´¢å›è°ƒå¯¹è±¡
+     *
+     * @param object
+     */
+    public static void setSearchCallback(Object object) {
+        NativeCaller.SetSearchCallBack(object);
+    }
+
+    /**
+     * è®¾ç½®å›è°ƒå¯¹è±¡
+     *
+     * @param object
+     */
+    public static void setCallback(Object object) {
+        NativeCaller.SetCallBack(object);
+    }
+
+    /**
+     * é€€å‡ºæœç´¢
+     *
+     * @return
+     */
+    public static int unInitSearchDevice() {
+        return NativeCaller.SearchDeviceUninit();
+    }
+
+    /**
+     * æœç´¢è®¾å¤‡
+     *
+     * @return
+     */
+    public static int searchDevice() {
+        return NativeCaller.SearchDevice();
+    }
+
+    /**
+     * åˆ›å»ºè®¾å¤‡
+     *
+     * @param strUsername
+     * @param strPwd
+     * @param strHost
+     * @param nPort
+     * @param StrDid
+     * @param NetType     0=TCP ,1=P2P
+     * @return userId
+     */
+    public static long createDevice(String strUsername, String strPwd, String strHost, int nPort, String StrDid, int NetType) {
+        return NativeCaller.CreateInstance(strUsername, strPwd, strHost, nPort, StrDid, NetType);
+    }
+
+    /**
+     * é”€æ¯è®¾å¤‡
+     *
+     * @param UserID
+     * @return
+     */
+    public static int destoryDevice(long UserID) {
+        return NativeCaller.DestroyInstance(UserID);
+    }
+
+    /**
+     * è®¾å¤‡å¼€å¯
+     *
+     * @param userID
+     * @return
+     */
+    public static int openDevice(long userID) {
+        return NativeCaller.Start(userID);
+    }
+
+    /**
+     * è®¾å¤‡å…³é—­
+     *
+     * @param userID
+     * @return
+     */
+    public static int closeDevice(long userID) {
+        return NativeCaller.Stop(userID);
+    }
+
+    /**
+     * è·å–è®¾å¤‡å‚æ•°
+     *
+     * @param userID
+     * @param nType
+     * @return
+     */
+    public static int getDeviceParam(long userID, int nType) {
+        return NativeCaller.GetParam(userID, nType);
+    }
+
+    /**
+     * è®¾ç½®è®¾å¤‡å‚æ•°
+     *
+     * @param userID
+     * @param nType
+     * @param param
+     * @return
+     */
+    public static int setDeviceParam(long userID, int nType, String param) {
+        return NativeCaller.SetParam(userID, nType, param);
+    }
+
+    /**
+     * æ’­æ”¾å®æ—¶è§†é¢‘æµ
+     *
+     * @param userID
+     * @param streamId
+     * @param subStreamId
+     * @return
+     */
+    public static int startPlayStream(long userID, int streamId, int subStreamId) {
+        return NativeCaller.StartStream(userID, streamId, subStreamId);
+    }
+
+    /**
+     * ç»“æŸæ’­æ”¾è§†é¢‘æµ
+     *
+     * @param userID
+     * @return
+     */
+    public static int stopPlayStream(long userID) {
+        return NativeCaller.StopStream(userID);
+    }
+
+    /**
+     * è®¾ç½®ç”»æ¿
+     *
+     * @param userID
+     * @param render
+     */
+    public static void setRender(long userID, Object render) {
+        NativeCaller.SetRender(userID, render);
+    }
+
+    /**
+     * æ§åˆ¶è®¾å¤‡
+     *
+     * @param UserID
+     * @param nType
+     * @return
+     */
+    public static int ptzControl(long UserID, int nType) {
+        return NativeCaller.PtzControl(UserID, nType);
+    }
+
+    /**
+     * æ’­æ”¾éŸ³é¢‘
+     *
+     * @param UserID
+     * @param AudioId
+     * @return
+     */
+    public static int startPlayAudio(long UserID, int AudioId) {
+        return NativeCaller.StartAudio(UserID, AudioId);
+    }
+
+    /**
+     * ç»“æŸéŸ³é¢‘æ’­æ”¾
+     *
+     * @param UserID
+     * @return
+     */
+    public static int stopPlayAudio(long UserID) {
+        return NativeCaller.StopAudio(UserID);
+    }
+
+    /**
+     * å¼€å§‹è¯´è¯
+     *
+     * @param nUserID
+     * @return
+     */
+    public static int startTalk(long UserID) {
+        return NativeCaller.StartTalk(UserID);
+    }
+
+    /**
+     * ç»“æŸè¯´è¯
+     *
+     * @param UserID
+     * @return
+     */
+    public static int stopTalk(long UserID) {
+        return NativeCaller.StopTalk(UserID);
+    }
+
+    /**
+     * å‘é€è¯´è¯æ•°æ®
+     *
+     * @param nUserID
+     * @param data
+     * @param size
+     * @return
+     */
+    public static int SendTalkData(long userID, byte[] data, int size) {
+        return NativeCaller.SendTalkData(userID, data, size);
+    }
+
+    /**
+     * å›¾ç‰‡æµè½¬æ¢
+     *
+     * @param yuv
+     * @param rgb
+     * @param width
+     * @param height
+     * @return
+     */
+    public static int YUV420ToRGB565(byte[] yuv, byte[] rgb, int width, int height) {
+        return NativeCaller.YUV420ToRGB565(yuv, rgb, width, height);
+    }
+
+    /**
+     * å¼€å§‹å½•åƒ
+     *
+     * @param filename
+     * @param forcc
+     * @param height
+     * @param width
+     * @param framerate
+     * @return
+     */
+    public static int startRecordVideo(String filename, String forcc, int height, int width, int framerate) {
+        return object.p2pipcam.nativecaller.NativeCaller.OpenAvi(filename, forcc, height, width, framerate);
+    }
+
+    /**
+     * å½•åƒæ•°æ®æµå†™å…¥åˆ°æ–‡ä»¶
+     *
+     * @param data
+     * @param len
+     * @param keyframe
+     * @return
+     */
+    public static int writeVideoData(byte[] data, int len, int keyframe) {
+        return object.p2pipcam.nativecaller.NativeCaller.WriteData(data, len, keyframe);
+    }
+
+    /**
+     * ç»“æŸå½•åƒ
+     *
+     * @return
+     */
+    public static int stopRecordVideo() {
+        return object.p2pipcam.nativecaller.NativeCaller.CloseAvi();
+    }
+
+    /**
+     * è·å–è¿œç¨‹å½•åƒ
+     *
+     * @param userid
+     * @return
+     */
+    public static int getRecordVideo(long userid, int bYear, int bMon, int bDay, int eYear, int eMon, int eDay) {
+        return NativeCaller.SearchRecordFile(userid, bYear, bMon, bDay, 0, 0, 0, eYear, eMon, eDay, 23, 59, 59);
+    }
+
+    /**
+     * è®¾ç½®å½•åƒæ’­æ”¾Render
+     *
+     * @param nUserID
+     * @param render
+     * @return
+     */
+    public static int setRecordRender(long nUserID, Object render) {
+        return NativeCaller.SetRecordRender(nUserID, render);
+    }
+
+    /**
+     * å¼€å§‹æ’­æ”¾å½•åƒ
+     *
+     * @param nUserID
+     * @param filename
+     * @return
+     */
+    public static int startPlayRecord(long nUserID, String filename, int pos) {
+        return NativeCaller.StartPlayRecord(nUserID, filename, pos);
+    }
+
+    /**
+     * ç»“æŸæ’­æ”¾å½•åƒ
+     *
+     * @param nUserID
+     * @param filename
+     * @return
+     */
+    public static int stopPlayRecord(long nUserID, String filename) {
+        return NativeCaller.StopPlayRecord(nUserID, filename);
+    }
+
+    /**
+     * è°ƒæ•´æ’­æ”¾ä½ç½®
+     *
+     * @param nUserID
+     * @param filename
+     * @param pos
+     * @return
+     */
+    public static int playRecordPos(long nUserID, String filename, int pos) {
+        return NativeCaller.PlayRecordPos(nUserID, filename, pos);
+    }
+
+    /**
+     * æš‚åœæ’­æ”¾
+     *
+     * @param nUserID
+     * @param filename
+     * @return
+     */
+    public static int pausePlayRecord(long nUserID, String filename) {
+        return NativeCaller.PausePlayRecord(nUserID, filename);
+    }
+
+    /**
+     * æ£€æµ‹ç½‘ç»œ
+     */
+    public static void networkDetect() {
+        NativeCaller.NetworkDetect();
+    }
+
+    /**
+     * ç»“æŸapp
+     *
+     * @return
+     */
+    public static int unInitialize() {
+        return NativeCaller.UnInitLib();
+    }
+
 }

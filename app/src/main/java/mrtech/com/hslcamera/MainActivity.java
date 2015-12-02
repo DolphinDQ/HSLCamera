@@ -8,6 +8,8 @@ import android.view.View;
 import mrtech.smarthome.hslcamera.DeviceStatusListener;
 import mrtech.smarthome.hslcamera.HSLCamera;
 import mrtech.smarthome.hslcamera.HSLCameraManager;
+import mrtech.smarthome.router.Router;
+import mrtech.smarthome.router.RouterManager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,27 +29,21 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.ExecutionException;
 
 //import com.test.R;
 
 /**
  * @author Administrator
  */
-public class MainActivity extends BaseActivity implements View.OnClickListener, DeviceStatusListener {
-    private TextView statusItem;
-    private Button connectItem;
-    private Button playItem;
-    public static long userId;
-    private Button closeItem;
-    private TextView connectTime;
-    private Calendar startTime;
-    private Handler handler = new StateHandler();
-    private static final String DEFAULT_CHARSET = "utf-8";
+public class MainActivity extends BaseActivity implements View.OnClickListener {
+
     private ListView logList;
     private ArrayAdapter<String> stringArrayAdapter;
     private AsyncTask<Void, Void, Void> testTask;
     private Button btnCamera;
     private HSLCameraManager manager;
+    private RouterManager mRouterManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,12 +53,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         manager = HSLCameraManager.getInstance();
         manager.init();
         manager.setCallbackLoop(getMainLooper());
-        manager.addCamera(new HSLCamera(null, "HSL-118486-DLFHB", "admin", ""));
-        manager.addCamera(new HSLCamera(null, "HSL-033860-DWUZF", "admin", ""));
-        manager.addCamera(new HSLCamera(null, "HSL-125999-BVHJY", "admin", ""));
-        manager.addCamera(new HSLCamera(null, "HSL-126288-CWMTF", "admin", ""));
-        manager.addCamera(new HSLCamera(null, "HSL-126276-EYKNV", "admin", ""));
-        manager.addCamera(new HSLCamera(null, "HSL-124419-UBUFY", "admin", ""));
+//        manager.addCamera(new HSLCamera(null, "HSL-118486-DLFHB", "admin", ""));
+//        manager.addCamera(new HSLCamera(null, "HSL-033860-DWUZF", "admin", ""));
+//        manager.addCamera(new HSLCamera(null, "HSL-125999-BVHJY", "admin", ""));
+//        manager.addCamera(new HSLCamera(null, "HSL-126288-CWMTF", "admin", ""));
+//        manager.addCamera(new HSLCamera(null, "HSL-126276-EYKNV", "admin", ""));
+//        manager.addCamera(new HSLCamera(null, "HSL-124419-UBUFY", "admin", ""));
+        mRouterManager = RouterManager.getInstance();
+        mRouterManager.init();
+        mRouterManager.addRouter(new Router(null, "SOZGA6-ZCPYSB-IOT83P-P2MLOL-LFY81Z-57F"));
+        mRouterManager.addRouter(new Router(null, "JSKE8Y-X5FLNW-M0IO1S-I4MURT-O7VO79-H7B"));
+        mRouterManager.addRouter(new Router(null, "FKGN77-ALORH3-8BWIYO-640WEW-5MB7YP-18Q"));
     }
 
     @Override
@@ -86,30 +87,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 num++;
             }
         }
-        btnCamera.setText("…„œÒÕ∑(" + num + "/" + cameraList.length + ")");
+        btnCamera.setText("ÊëÑÂÉèÂ§¥(" + num + "/" + cameraList.length + ")");
     }
 
     private void initView() {
-        statusItem = (TextView) findViewById(R.id.status_item);
-        connectItem = (Button) findViewById(R.id.connect_btn);
-        playItem = (Button) findViewById(R.id.play_btn);
-        closeItem = (Button) findViewById(R.id.close_btn);
-        connectTime = (TextView) findViewById(R.id.connect_time);
         logList = (ListView) findViewById(R.id.log_lst);
-        playItem.setVisibility(View.GONE);
-        closeItem.setVisibility(View.GONE);
-        connectItem.setOnClickListener(this);
-        playItem.setOnClickListener(this);
-        closeItem.setOnClickListener(this);
         findViewById(R.id.test_btn).setOnClickListener(this);
-        findViewById(R.id.cancel_test_btn).setOnClickListener(this);
         stringArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, new ArrayList<String>());
         logList.setAdapter(stringArrayAdapter);
         findViewById(R.id.navigate_to).setOnClickListener(this);
-        findViewById(R.id.get_data_btn).setOnClickListener(this);
-        findViewById(R.id.auth_btn).setOnClickListener(this);
         btnCamera = (Button) findViewById(R.id.camara_list_btn);
         btnCamera.setOnClickListener(this);
+        findViewById(R.id.router_list_btn).setOnClickListener(this);
     }
 
     @Override
@@ -119,20 +108,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             case R.id.test_btn:
                 startTest(0);
                 break;
-            case R.id.auth_btn:
-                startTest(1);
-                break;
-            case R.id.get_data_btn:
-                startTest(2);
-                break;
-            case R.id.cancel_test_btn:
-                cancelTest();
-                break;
             case R.id.navigate_to:
                 naviget(P2PTestActivity.class);
                 break;
             case R.id.camara_list_btn:
                 naviget(CameraListActivity.class);
+                break;
+            case R.id.router_list_btn:
+                naviget(RouterListActivity.class);
                 break;
         }
     }
@@ -166,9 +149,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                         case 1:
                             mAuthResult = doAuth();
                             if (mAuthResult != null && mAuthResult.getBoolean("success")) {
-                                trace("µ«¬º≥…π¶");
+                                trace("ÁôªÂΩïÊàêÂäü");
                             } else {
-                                trace("µ«¬º ß∞‹");
+                                trace("ÁôªÂΩïÂ§±Ë¥•");
                             }
                             break;
                         case 2:
@@ -177,7 +160,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                                 String tokenType = mAuthResult.getString("token_type");
                                 doGetData(token, tokenType);
                             } else {
-                                trace("Œ¥—È÷§");
+                                trace("Êú™È™åËØÅ");
                             }
                             break;
                     }
@@ -224,12 +207,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 try {
                     start = Calendar.getInstance();
                     int code = client.executeMethod(method);
-                    trace("«Î«ÛΩ·π˚ : " + (code == 200 ? "≥…π¶" : " ß∞‹") + " " + code);
+                    trace("ËØ∑Ê±ÇÁªìÊûú : " + (code == 200 ? "ÊàêÂäü" : "Â§±Ë¥•") + " " + code);
                     String json = method.getResponseBodyAsString();
                     JSONObject resp = new JSONObject(json);
                     // trace(json);
                     resp.put("success", code == 200);
-                    trace("«Î«Û¥¶¿Ì ±º‰ :" + (Calendar.getInstance().getTimeInMillis() - start.getTimeInMillis()) + "ms");
+                    trace("ËØ∑Ê±ÇÂ§ÑÁêÜÊó∂Èó¥ :" + (Calendar.getInstance().getTimeInMillis() - start.getTimeInMillis()) + "ms");
                     return resp;
                 } catch (Exception e) {
                     trace(e.getMessage());
@@ -248,56 +231,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 stringArrayAdapter.add(str);
             }
         });
-    }
-
-    private void cancelTest() {
-        testTask.cancel(true);
-    }
-
-    private class StateHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (msg.what == 0) {
-                if (msg.arg1 == 0) {
-                    statusItem.setText("¡¨Ω”÷–...");
-                } else if (msg.arg1 == 100) {
-                    statusItem.setText("‘⁄œﬂ");
-                    playItem.setVisibility(View.VISIBLE);
-                    closeItem.setVisibility(View.VISIBLE);
-                    if (startTime != null) {
-                        connectTime.setText("¡¨Ω”∫ƒ ±:" + (Calendar.getInstance().getTimeInMillis() - startTime.getTimeInMillis()) + "ms");
-                        startTime = null;
-                    }
-                    return;
-                } else if (msg.arg1 == 101) {
-                    statusItem.setText("¡¨Ω”¥ÌŒÛ");
-                } else if (msg.arg1 == 10) {
-                    statusItem.setText("¡¨Ω”≥¨ ±");
-                } else if (msg.arg1 == 9) {
-                    statusItem.setText("≤ª‘⁄œﬂ");
-                } else if (msg.arg1 == 5) {
-                    statusItem.setText("Œﬁ–ßID");
-                } else if (msg.arg1 == 11) {
-                    statusItem.setText("∂œø™");
-                } else if (msg.arg1 == 1) {
-                    statusItem.setText("”√ªß√˚√‹¬Î¥ÌŒÛ");
-                }
-                playItem.setVisibility(View.GONE);
-                closeItem.setVisibility(View.GONE);
-                connectTime.setText("");
-                return;
-            }
-        }
-
-    }
-
-    @Override
-    public void receiveDeviceStatus(long userid, int status) {
-        if (this.userId == userid) {
-            Message msg = handler.obtainMessage(0, status, 0);
-            handler.sendMessage(msg);
-        }
     }
 
 

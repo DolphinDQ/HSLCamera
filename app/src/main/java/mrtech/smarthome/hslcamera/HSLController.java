@@ -1,7 +1,7 @@
 package mrtech.smarthome.hslcamera;
 
 /**
- * 开关控制，参数设置
+ * the controller of camera ,
  * Created by zdqa1 on 2015/11/28.
  */
 public interface HSLController {

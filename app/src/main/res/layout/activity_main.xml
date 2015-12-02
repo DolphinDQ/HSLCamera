@@ -6,106 +6,17 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:visibility="gone"
-        android:layout_width="fill_parent"
-        android:layout_height="100dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="设备ID:" />
-
-        <EditText
-            android:id="@+id/device_id_item"
-            android:layout_width="200dp"
-            android:textSize="14sp"
-            android:text="HSL-118486-DLFHB"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/connect_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:text="连接" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:visibility="gone"
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:id="@+id/status_item"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
-        <Button
-            android:id="@+id/play_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:layout_marginLeft="30dp"
-            android:text="进入视频" />
-
-        <Button
-            android:id="@+id/close_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="断开连接"
-            />
-
-        <!--<Button-->
-            <!--android:id="@+id/btnStart"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:padding="5dp"-->
-            <!--android:layout_marginLeft="30dp"-->
-            <!--android:text="Start" />-->
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="50dp">
-        <TextView
-            android:id="@+id/connect_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"  />
-    </LinearLayout>
-    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <Button
-            android:id="@+id/auth_btn"
-            android:text="获取授权"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <Button
-            android:id="@+id/get_data_btn"
-            android:text="获取数据"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <Button
-            android:id="@+id/test_btn"
-            android:text="登录验证"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <Button
-            android:id="@+id/cancel_test_btn"
-            android:text="取消测试"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <Button
             android:id="@+id/navigate_to"
             android:text="P2P"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/router_list_btn"
+            android:text="路由管理"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <Button
@@ -114,7 +25,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
-
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp">
+        <Button
+            android:id="@+id/test_btn"
+            android:text="登录验证"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
     <ListView
         android:id="@+id/log_lst"
         android:layout_width="wrap_content"

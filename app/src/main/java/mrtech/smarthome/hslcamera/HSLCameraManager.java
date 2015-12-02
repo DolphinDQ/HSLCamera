@@ -361,21 +361,6 @@ public class HSLCameraManager {
         private RenderListener listener;
         private boolean isTakePicture = false;
 
-        private int compileShader(String paramString, int paramInt) {
-            int i = GLES20.glCreateShader(paramInt);
-            if (i != 0) {
-                int[] arrayOfInt = new int[1];
-                GLES20.glShaderSource(i, paramString);
-                GLES20.glCompileShader(i);
-                GLES20.glGetShaderiv(i, 35713, arrayOfInt, 0);
-                if (arrayOfInt[0] == 0) {
-                    GLES20.glDeleteShader(i);
-                    i = 0;
-                }
-            }
-            return i;
-        }
-
         public void setTakePicture(boolean isTakePicture) {
             this.isTakePicture = isTakePicture;
         }
@@ -436,6 +421,21 @@ public class HSLCameraManager {
             paramGLSurfaceView.setEGLContextClientVersion(2);
         }
 
+        public  int compileShader(String paramString, int paramInt) {
+            int i = GLES20.glCreateShader(paramInt);
+            if (i != 0) {
+                int[] arrayOfInt = new int[1];
+                GLES20.glShaderSource(i, paramString);
+                GLES20.glCompileShader(i);
+                GLES20.glGetShaderiv(i, 35713, arrayOfInt, 0);
+                if (arrayOfInt[0] == 0) {
+                    GLES20.glDeleteShader(i);
+                    i = 0;
+                }
+            }
+            return i;
+        }
+
         public long createShaders() {
             String fragmentShaderCode = "uniform sampler2D Ytex;\n";
             fragmentShaderCode += "uniform sampler2D Utex;\n";
@@ -443,7 +443,7 @@ public class HSLCameraManager {
             fragmentShaderCode += "precision mediump float;  \n";
             fragmentShaderCode += "varying vec4 VaryingTexCoord0; \n";
             fragmentShaderCode += "vec4 color;\n";
-            fragmentShaderCode += "void activity_main()\n";
+            fragmentShaderCode += "void main()\n";
             fragmentShaderCode += "{\n";
             fragmentShaderCode += "float yuv0 = (texture2D(Ytex,VaryingTexCoord0.xy)).r;\n";
             fragmentShaderCode += "float yuv1 = (texture2D(Utex,VaryingTexCoord0.xy)).r;\n";
@@ -462,7 +462,7 @@ public class HSLCameraManager {
             vertexShaderCode += "attribute vec4 vPosition;  \n";
             vertexShaderCode += "attribute vec4 myTexCoord; \n";
             vertexShaderCode += "varying vec4 VaryingTexCoord0; \n";
-            vertexShaderCode += "void activity_main(){               \n";
+            vertexShaderCode += "void main(){               \n";
             vertexShaderCode += "VaryingTexCoord0 = myTexCoord; \n";
             vertexShaderCode += "gl_Position = vPosition; \n";
             vertexShaderCode += "}  \n";
@@ -564,6 +564,7 @@ public class HSLCameraManager {
             return 0;
         }
 
+
         public void onDrawFrame(GL10 paramGL10) {
             GLES20.glClear(16384);
             synchronized (this) {
@@ -582,9 +583,11 @@ public class HSLCameraManager {
             }
         }
 
+
         public void onSurfaceChanged(GL10 paramGL10, int width, int height) {
             GLES20.glViewport(0, 0, width, height);
         }
+
 
         public void onSurfaceCreated(GL10 paramGL10, EGLConfig paramEGLConfig) {
             GLES20.glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
@@ -599,29 +602,20 @@ public class HSLCameraManager {
             return 0;
         }
 
-        public void writeSample(final byte[] paramArrayOfByte, final int width, final int height) {
+        public void writeSample(byte[] paramArrayOfByte, int width, int height) {
             synchronized (this) {
                 if ((width == 0) || (height == 0)) {
                     return;
                 }
                 if (listener != null) {
-                    new CallbackBase() {
-                        @Override
-                        public void callback() {
-                            listener.initComplete(paramArrayOfByte.length, width, height);
-                        }
-                    }.run();
+                    listener.initComplete(paramArrayOfByte.length, width, height);
                 }
 
+                //拍照
                 if (isTakePicture) {
                     isTakePicture = false;
                     if (listener != null)
-                        new CallbackBase() {
-                            @Override
-                            public void callback() {
-                                listener.takePicture(paramArrayOfByte, width, height);
-                            }
-                        }.run();
+                        listener.takePicture(paramArrayOfByte, width, height);
                 }
 
                 if ((width != this.mWidth) || (height != this.mHeight)) {
@@ -654,6 +648,7 @@ public class HSLCameraManager {
                 //return 1;
             }
         }
+
     }
 
     private interface AudioListener {
@@ -860,7 +855,7 @@ public class HSLCameraManager {
 
         public CameraController(HSLCameraManager manager, HSLCamera camera) {
             mCurrent = camera;
-            mManager=manager;
+            mManager = manager;
         }
 
         private final HSLCamera mCurrent;
@@ -871,7 +866,7 @@ public class HSLCameraManager {
                 trace("device must playing...");
                 return;
             }
-            new AsyncTask<Void,Void,Void>(){
+            new AsyncTask<Void, Void, Void>() {
                 @Override
                 protected Void doInBackground(Void... params) {
                     synchronized (CameraController.this) {

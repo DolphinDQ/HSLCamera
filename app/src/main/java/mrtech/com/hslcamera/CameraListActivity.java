@@ -36,7 +36,6 @@ public class CameraListActivity extends AppCompatActivity {
         camManager = HSLCameraManager.getInstance();
         camManager.init();
         cameraList = camManager.getCameraList();
-
         camManager.setDeviceStatusListener(new DeviceStatusListener() {
             @Override
             public void receiveDeviceStatus(long userid, int status) {
@@ -118,13 +117,13 @@ public class CameraListActivity extends AppCompatActivity {
 
     private void addCamera() {
         camManager.addCamera(new HSLCamera(null, "HSL-118486-DLFHB", "admin", ""));
-        cameraList=camManager.getCameraList();
+        cameraList = camManager.getCameraList();
         play(0);
     }
 
     private void deleteCamera() {
         camManager.removeCamera("HSL-118486-DLFHB");
-        cameraList=camManager.getCameraList();
+        cameraList = camManager.getCameraList();
         play(0);
     }
 
@@ -173,7 +172,7 @@ public class CameraListActivity extends AppCompatActivity {
             viewCamera.setText("nothing!");
             return;
         }
-        trace("play ...."+idx);
+        trace("play ...." + idx);
         int i = index + idx;
         if (i < 0) i = 0;
         if (i >= max) i = max - 1;
@@ -181,7 +180,7 @@ public class CameraListActivity extends AppCompatActivity {
         viewCamera.setText("playing :" + (i + 1) + "/" + max + "/" + cameraList.length);
         if (playingList[i].equals(cameraPlayer.getPlaying())) return;
         cameraPlayer.play(playingList[i]);
-        ((Switch)findViewById(R.id.audio_switch)).setChecked(false);
+        ((Switch) findViewById(R.id.audio_switch)).setChecked(false);
     }
 
     @Override
