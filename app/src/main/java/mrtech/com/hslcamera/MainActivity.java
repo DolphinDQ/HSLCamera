@@ -10,15 +10,13 @@ import mrtech.smarthome.hslcamera.HSLCamera;
 import mrtech.smarthome.hslcamera.HSLCameraManager;
 import mrtech.smarthome.router.Router;
 import mrtech.smarthome.router.RouterManager;
+import mrtech.smarthome.router.RouterStatusListener;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 
 import org.apache.commons.httpclient.HttpClient;
@@ -29,7 +27,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.concurrent.ExecutionException;
 
 //import com.test.R;
 
@@ -44,6 +41,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private Button btnCamera;
     private HSLCameraManager manager;
     private RouterManager mRouterManager;
+    private Button btnRouter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,19 +49,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         setContentView(R.layout.activity_main);
         initView();
         manager = HSLCameraManager.getInstance();
-        manager.init();
-        manager.setCallbackLoop(getMainLooper());
-//        manager.addCamera(new HSLCamera(null, "HSL-118486-DLFHB", "admin", ""));
-//        manager.addCamera(new HSLCamera(null, "HSL-033860-DWUZF", "admin", ""));
-//        manager.addCamera(new HSLCamera(null, "HSL-125999-BVHJY", "admin", ""));
-//        manager.addCamera(new HSLCamera(null, "HSL-126288-CWMTF", "admin", ""));
-//        manager.addCamera(new HSLCamera(null, "HSL-126276-EYKNV", "admin", ""));
-//        manager.addCamera(new HSLCamera(null, "HSL-124419-UBUFY", "admin", ""));
         mRouterManager = RouterManager.getInstance();
-        mRouterManager.init();
-        mRouterManager.addRouter(new Router(null, "SOZGA6-ZCPYSB-IOT83P-P2MLOL-LFY81Z-57F"));
-        mRouterManager.addRouter(new Router(null, "JSKE8Y-X5FLNW-M0IO1S-I4MURT-O7VO79-H7B"));
-        mRouterManager.addRouter(new Router(null, "FKGN77-ALORH3-8BWIYO-640WEW-5MB7YP-18Q"));
     }
 
     @Override
@@ -75,7 +61,38 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 refreshCameraNumber();
             }
         });
+        mRouterManager.setRouterStatusListener(new RouterStatusListener() {
+            @Override
+            public void StatusChanged(Router router) {
+                btnRouter.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshRouterNumber();
+                    }
+                });
+            }
+        });
         refreshCameraNumber();
+        refreshRouterNumber();
+    }
+
+    private void refreshRouterNumber() {
+        final Router[] routerList = mRouterManager.getRouterList();
+        int authentication = 0;
+        int connect = 0;
+        int port = 0;
+        for (Router router : routerList) {
+            if (router.getContext().isAuthenticated()) {
+                authentication++;
+            }
+            if (router.getContext().isConnected()) {
+                connect++;
+            }
+            if (router.getContext().isPortValid()) {
+                port++;
+            }
+        }
+        btnRouter.setText(String.format("路由器%s/%s/%s/%s", routerList.length, port, connect, authentication));
     }
 
 
@@ -98,7 +115,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         findViewById(R.id.navigate_to).setOnClickListener(this);
         btnCamera = (Button) findViewById(R.id.camara_list_btn);
         btnCamera.setOnClickListener(this);
-        findViewById(R.id.router_list_btn).setOnClickListener(this);
+        btnRouter = (Button) findViewById(R.id.router_list_btn);
+        btnRouter.setOnClickListener(this);
     }
 
     @Override

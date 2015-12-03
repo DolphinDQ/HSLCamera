@@ -9,6 +9,7 @@ import java.util.List;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -18,8 +19,7 @@ import android.widget.Toast;
 //import com.test.R;
 
 
-public class BaseActivity extends Activity
-{
+public class BaseActivity extends Activity {
     protected TextView backItem;
     protected TextView titleItem;
     protected TextView functionItem;
@@ -28,8 +28,7 @@ public class BaseActivity extends Activity
     public static List<Activity> activitys = new ArrayList<Activity>();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         activitys.add(this);
@@ -42,55 +41,52 @@ public class BaseActivity extends Activity
     }
 
 
-
     protected void back() {
         finish();
     }
 
 
-    protected void function()
-    {}
+    protected void function() {
+    }
 
 
-    protected void setBackText(String text)
-    {
+    protected void setBackText(String text) {
         backItem.setText(text);
     }
 
 
-    protected void setTitleText(String title)
-    {
+    protected void setTitleText(String title) {
         titleItem.setText(title);
     }
 
 
-    protected void setfunctionText(String text)
-    {
+    protected void setfunctionText(String text) {
         functionItem.setText(text);
     }
 
 
-    protected void hideFunction()
-    {
+    protected void hideFunction() {
         functionItem.setVisibility(View.GONE);
     }
 
-    protected void showProgressDialog(String msg)
-    {
+    protected void showProgressDialog(String msg) {
         progressDialog = null;
         progressDialog = ProgressDialog.show(this, "", msg, true, true);
     }
-    protected void hideProgressDialog()
-    {
-        if(progressDialog != null && progressDialog.isShowing())
-        {
+
+    protected void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
             progressDialog = null;
         }
     }
 
-    protected void showToast(String msg)
-    {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    protected void showToast(final String msg) {
+        new Handler(getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(BaseActivity.this, msg, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

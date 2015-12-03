@@ -65,21 +65,21 @@ public class Router {
          *
          * @return
          */
-        boolean isSNInvalid();
+        boolean isSNValid();
 
         /**
-         * get connection handle(socket number)
+         * get the status of connection
          *
          * @return
          */
-        int getHandle();
+        boolean isConnected();
 
         /**
-         * get P2P port
+         * get the status P2P port
          *
          * @return
          */
-        int getPort();
+        boolean isPortValid();
 
         /**
          * get the status of communication permission
@@ -95,11 +95,11 @@ public class Router {
          */
         void addRequest(Request request);
 
-
         /**
          * add a request to router request queue , and waiting for response .
+         *
          * @param request
-         * @param timeout   MILLISECONDS
+         * @param timeout MILLISECONDS
          * @return
          * @throws TimeoutException
          */
@@ -107,6 +107,7 @@ public class Router {
 
         /**
          * add a request to router request queue , and waiting for response .default timeout RouterManager.ROUTER_REQUEST_TIMEOUT
+         *
          * @param request
          * @return
          * @throws TimeoutException
@@ -115,11 +116,11 @@ public class Router {
 
         /**
          * set the router callback message listener
+         *
          * @param listener
          */
         void setResponseListener(ResponseThreadListener listener);
     }
-
 
     @Override
     public String toString() {

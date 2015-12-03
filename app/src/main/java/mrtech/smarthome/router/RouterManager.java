@@ -1,33 +1,12 @@
 package mrtech.smarthome.router;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.stream.NewAllStreamParser;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.prefs.InvalidPreferencesFormatException;
 
-import javax.net.ssl.SSLSocket;
-
-import mrtech.smarthome.app.SmartHomeApp;
-import mrtech.smarthome.interf.ResponseThreadListener;
-import mrtech.smarthome.router.Router.RouterContext;
-import mrtech.smarthome.rpc.Messages;
-import mrtech.smarthome.rpc.Messages.Request;
-import mrtech.smarthome.rpc.Messages.Response;
 import mrtech.smarthome.util.Constants;
-import mrtech.smarthome.util.NetUtil;
-import mrtech.smarthome.util.NumberUtil;
-import mrtech.smarthome.util.RequestUtil;
 
 /**
  * router connection manager
@@ -55,19 +34,17 @@ public class RouterManager {
     }
 
     private boolean isP2PInitialized() {
-        return mP2PHandle > 0;
+        return mP2PHandle != 0;
     }
 
 
     public void init() {
-        if (isP2PInitialized() && isP2PInitialized()) return;
+        if (isP2PInitialized()) return;
         final String sevc = Constants.server;
         final int port = Constants.port;
         final String user = "testsdk";
         final String password = "testsdk";
         mP2PHandle = NewAllStreamParser.DNPCreatePortServer(sevc, port, user, password);
-//        NewAllStreamParser.DNPCheckSrvConnState(mP2PHandle);
-
         trace("inited....p2p handle :" + mP2PHandle);
     }
 
@@ -79,19 +56,18 @@ public class RouterManager {
     }
 
     public void addRouter(Router router) {
-        if (getRouter(router.getSN()) != null) return;
-        final InnerRouter innerRouter = new InnerRouter(router, mP2PHandle);
+        if (router == null || getRouter(router.getSN()) != null) return;
+        final RouterClient innerRouter = new RouterClient(router, mP2PHandle);
         router.setContext(innerRouter);
         setListener(innerRouter);
         innerRouter.init();
-
         mRouters.add(router);
-//        checkRouter(router);
         trace("add router :" + router.getSN());
     }
 
     public void removeRouter(Router router) {
-        ((InnerRouter) router.getContext()).destroy();
+        if (router == null) return;
+        ((RouterClient) router.getContext()).destroy();
         mRouters.remove(router);
     }
 
@@ -103,16 +79,25 @@ public class RouterManager {
         return null;
     }
 
-    public Router getRouter(int handle) {
-        for (Router mRouter : mRouters) {
-            if (mRouter.getContext().getHandle() == handle)
-                return mRouter;
-        }
-        return null;
-    }
 
     public Router[] getRouterList() {
         return mRouters.toArray(new Router[mRouters.size()]);
+    }
+
+    /**
+     * get valid/invalid router list, ps:the valid router that is got authentication
+     *
+     * @param valid
+     * @return
+     */
+    public Router[] getRouterList(boolean valid) {
+        ArrayList<Router> routers = new ArrayList<>();
+        for (Router mRouter : mRouters) {
+            if (mRouter.getContext().isAuthenticated() == valid) {
+                routers.add(mRouter);
+            }
+        }
+        return mRouters.toArray(new Router[routers.size()]);
     }
 
     public void removeAll() {
@@ -122,14 +107,14 @@ public class RouterManager {
         }
     }
 
-    public void setRouterStatusListener(RouterStatusListener listener){
+    public void setRouterStatusListener(RouterStatusListener listener) {
         for (Router router : getRouterList()) {
-            routerStatusListener=listener;
-            setListener((InnerRouter)router.getContext());
+            routerStatusListener = listener;
+            setListener((RouterClient) router.getContext());
         }
     }
 
-    private void setListener(InnerRouter roter) {
-        roter.setRouterStatusListener(routerStatusListener);
+    private void setListener(RouterClient router) {
+        router.setRouterStatusListener(routerStatusListener);
     }
 }
