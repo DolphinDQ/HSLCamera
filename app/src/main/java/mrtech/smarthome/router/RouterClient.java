@@ -30,7 +30,7 @@ import mrtech.smarthome.util.RequestUtil;
  */
 class RouterClient implements Router.RouterContext {
     private static final int ROUTER_REQUEST_TIMEOUT = 2000;
-    private static final int ROUTER_KEEP_ALIVE_DELAY = 5000;
+    private static final int ROUTER_KEEP_ALIVE_DELAY = 20000;
     private static final int ROUTER_READ_INTERVAL = 1000;
     private RouterStatusListener routerStatusListener;
 
@@ -274,8 +274,7 @@ class RouterClient implements Router.RouterContext {
             int retryTimes = timeout / delay;
             do {
                 if (mResponseMap.containsKey(requestId)) {
-                    final Messages.Response remove = mResponseMap.remove(requestId);
-                    return remove;
+                    return mResponseMap.remove(requestId);
                 }
                 try {
                     Thread.sleep(delay);
@@ -432,6 +431,7 @@ class RouterClient implements Router.RouterContext {
         @Override
         public void run() {
             final SSLSocket sslSocket = socket;
+
             while (!isCancelled()) {
                 if (isConnected()) {
                     Messages.Callback callback = null;

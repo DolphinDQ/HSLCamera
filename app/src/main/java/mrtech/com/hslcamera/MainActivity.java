@@ -1,6 +1,9 @@
 package mrtech.com.hslcamera;
 
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.MessageQueue;
 import android.util.Log;
 import android.view.View;
 
@@ -42,6 +45,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private HSLCameraManager manager;
     private RouterManager mRouterManager;
     private Button btnRouter;
+    private RR rr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +79,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         refreshCameraNumber();
         refreshRouterNumber();
     }
+
 
     private void refreshRouterNumber() {
         final Router[] routerList = mRouterManager.getRouterList();
@@ -113,7 +118,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         stringArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, new ArrayList<String>());
         logList.setAdapter(stringArrayAdapter);
         findViewById(R.id.navigate_to).setOnClickListener(this);
-        btnCamera = (Button) findViewById(R.id.camara_list_btn);
+        btnCamera = (Button) findViewById(R.id.camera_list_btn);
         btnCamera.setOnClickListener(this);
         btnRouter = (Button) findViewById(R.id.router_list_btn);
         btnRouter.setOnClickListener(this);
@@ -127,18 +132,41 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 startTest(0);
                 break;
             case R.id.navigate_to:
-                naviget(P2PTestActivity.class);
+                navigate(P2PTestActivity.class);
                 break;
-            case R.id.camara_list_btn:
-                naviget(CameraListActivity.class);
+            case R.id.camera_list_btn:
+                navigate(CameraListActivity.class);
                 break;
             case R.id.router_list_btn:
-                naviget(RouterListActivity.class);
+
+                navigate(RouterListActivity.class);
                 break;
         }
     }
 
-    private void naviget(Class<?> cls) {
+    private class RR implements Runnable {
+        private Looper looper;
+
+        @Override
+        public void run() {
+            looper = Looper.myLooper();
+            trace("start!!");
+            Looper.prepare();
+            trace("stop!!!!!!!!!!!");
+        }
+
+        public void cancel() {
+            new Handler(looper).post(new Runnable() {
+                @Override
+                public void run() {
+                    Looper.loop();
+                    trace("cancel~~~");
+                }
+            });
+        }
+    }
+
+    private void navigate(Class<?> cls) {
         Intent intent = new Intent(this, cls);
         startActivity(intent);
     }

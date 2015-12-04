@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <Button
-            android:id="@+id/camara_list_btn"
+            android:id="@+id/camera_list_btn"
             android:text="摄像头"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

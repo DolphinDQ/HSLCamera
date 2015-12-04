@@ -58,6 +58,12 @@ public class HSLCamera {
          */
         boolean isPlaying();
 
+        /**
+         * get reconnecting status
+         * @return
+         */
+        boolean isReconnecting();
+
 
     }
 }

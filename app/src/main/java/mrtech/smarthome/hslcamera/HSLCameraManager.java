@@ -203,6 +203,7 @@ public class HSLCameraManager {
         public long mHandle;
         public int mStatus;
         public boolean mIsPlaying;
+        public boolean mReconnecting;
 
         @Override
         public long getHandle() {
@@ -217,6 +218,11 @@ public class HSLCameraManager {
         @Override
         public boolean isPlaying() {
             return mIsPlaying;
+        }
+
+        @Override
+        public boolean isReconnecting() {
+            return mReconnecting;
         }
     }
 
@@ -251,21 +257,28 @@ public class HSLCameraManager {
             final int status = new Long(nType).intValue();
             final HSLCamera cam;
             if ((cam = getCamera(UserID)) != null) {
-                ((CameraStatus) cam.mStatus).mStatus = status;
+                final CameraStatus cameraStatus = (CameraStatus) cam.mStatus;
+                cameraStatus.mStatus = status;
                 if (status != 100) {
-                    ((CameraStatus) cam.mStatus).mIsPlaying = false;
+                    cameraStatus.mIsPlaying = false;
                 }
                 trace("camera " + cam.mCamId + " state changed to " + status);
                 if (status == 101 || status == 10 || status == 11 || status == 9 || status == 2) {
+                    synchronized (cameraStatus) {
+                        if (cameraStatus.mReconnecting) return;
+                        cameraStatus.mReconnecting = true;
+                    }
                     new AsyncTask<HSLCamera, Void, Void>() {
                         @Override
                         protected Void doInBackground(HSLCamera... params) {
                             try {
-                                Thread.sleep(1000);
+                                Thread.sleep(5000);
                                 removeCamera(params[0]);
                                 addCamera(params[0]);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
+                            } finally {
+                                cameraStatus.mReconnecting = false;
                             }
                             return null;
                         }
@@ -421,7 +434,7 @@ public class HSLCameraManager {
             paramGLSurfaceView.setEGLContextClientVersion(2);
         }
 
-        public  int compileShader(String paramString, int paramInt) {
+        public int compileShader(String paramString, int paramInt) {
             int i = GLES20.glCreateShader(paramInt);
             if (i != 0) {
                 int[] arrayOfInt = new int[1];
@@ -852,47 +865,48 @@ public class HSLCameraManager {
     private class CameraController implements HSLController {
 
         private final HSLCameraManager mManager;
+        private static final int PTZ_CMD_DELAY = 1000;
+        private final HSLCamera mCurrent;
 
         public CameraController(HSLCameraManager manager, HSLCamera camera) {
             mCurrent = camera;
             mManager = manager;
         }
 
-        private final HSLCamera mCurrent;
-
-        private void ptzContrl(final HSLCamera cam, final int cmd) {
-            if (cam == null) return;
-            if (!cam.mStatus.isPlaying()) {
+        private void ptzControl(final int cmd) {
+            if (mCurrent == null) return;
+            if (!mCurrent.mStatus.isPlaying()) {
                 trace("device must playing...");
                 return;
             }
-            new AsyncTask<Void, Void, Void>() {
-                @Override
-                protected Void doInBackground(Void... params) {
-                    synchronized (CameraController.this) {
-                        try {
-                            trace("ptz command:" + cmd);
-                            DeviceSDK.ptzControl(cam.mStatus.getHandle(), cmd);
-                            Thread.sleep(1000);
-                            DeviceSDK.ptzControl(cam.mStatus.getHandle(), cmd + 1);
-                        } catch (Exception ex) {
-                            trace("ptz control error", ex);
+            synchronized (mCurrent) {
+                new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... params) {
+                        synchronized (CameraController.this) {
+                            try {
+                                trace("ptz command:" + cmd);
+                                DeviceSDK.ptzControl(mCurrent.mStatus.getHandle(), cmd);
+                                Thread.sleep(PTZ_CMD_DELAY);
+                                DeviceSDK.ptzControl(mCurrent.mStatus.getHandle(), cmd + 1);
+                            } catch (Exception ex) {
+                                trace("ptz control error", ex);
+                            }
                         }
+                        return null;
                     }
-                    return null;
-                }
-            }.execute();
-
+                }.execute();
+            }
         }
 
         @Override
         public void ptzUp() {
-            ptzContrl(getCurrent(), 0);
+            ptzControl(0);
         }
 
         @Override
         public void ptzDown() {
-            ptzContrl(getCurrent(), 2);
+            ptzControl(2);
         }
 
         @Override
@@ -902,12 +916,13 @@ public class HSLCameraManager {
 
         @Override
         public void ptzLeft() {
-            ptzContrl(getCurrent(), 4);
+            ptzControl(4);
         }
 
         @Override
         public void ptzRight() {
-            ptzContrl(getCurrent(), 6);
+            ptzControl(6);
         }
     }
+
 }

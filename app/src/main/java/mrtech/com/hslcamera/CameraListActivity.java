@@ -80,7 +80,7 @@ public class CameraListActivity extends AppCompatActivity {
         ListeningClick(R.id.close_btn, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                camManager.removeCamera(cameraPlayer.getPlaying());
+                cameraPlayer.stop();
             }
         });
         viewCamera = (TextView) findViewById(R.id.cam_num_view);
